@@ -1,0 +1,10 @@
+/* This makes sure Ant Design toasts float above everything */
+.ant-message {
+    z-index: 9999 !important;
+    position: fixed !important;
+    top: 80px !important; /* adjust as needed */
+    width: 100%;
+    display: flex !important;
+    justify-content: center;
+    pointer-events: none;
+}

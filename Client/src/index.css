@@ -1,0 +1,23 @@
+
+@import "tailwindcss";
+
+
+html,
+body,
+#root {
+  background: linear-gradient(to bottom left, rgb(11, 31, 57), rgb(76, 197, 255));
+  box-shadow: 0 0 20px rgba(76, 197, 255, 0.4);
+  animation: glow 3s ease-in-out infinite;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.text-sky-custom {
+  color: rgb(76,197,255);
+  text-shadow: 0 0 10px rgba(76, 197, 255, 0.6);
+}
+  
+
+

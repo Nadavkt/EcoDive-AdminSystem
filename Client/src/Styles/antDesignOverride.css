@@ -1,0 +1,66 @@
+:where(.ant-typography),
+:where(.ant-select),
+:where(.ant-table),
+:where(.ant-menu),
+:where(.ant-form),
+:where(.ant-modal),
+:where(.ant-card),
+:where(.ant-dropdown),
+:where(.ant-tabs),
+:where(.ant-checkbox-wrapper),
+:where(.ant-radio-wrapper) {
+  color: white !important;
+}
+
+/* Calendar cell text */
+:where(.ant-picker-calendar) td,
+:where(.ant-picker-calendar) th {
+  color: white !important;
+}
+
+:where(.ant-list-item-meta-title) {
+    color: white !important;
+}
+
+/* Make the ant calendar background transparent */
+.ant-picker-calendar {
+    background: transparent !important;
+}
+  
+.ant-picker-panel {
+    background: transparent !important;
+} 
+
+
+/* Make the table background transparent */
+.ant-table {
+    background: transparent !important;
+}
+
+.ant-table-thead{
+    color: rgb(76,197,255);
+    text-shadow: 0 0 10px rgba(76, 197, 255, 0.6);
+}
+
+/* Make the body rows transparent */
+.ant-table-tbody > tr > td {
+    background: transparent !important;
+}
+  
+/* Optional: remove borders if you want a cleaner look */
+.ant-table-container table {
+    border: none;
+}
+  
+/* .ant-picker-cell-inner {
+    background-color: transparent !important;
+}  */
+
+.ant-message {
+    z-index: 9999 !important;
+}
+
+:where(.ant-form-item-label > label) {
+    color: white !important;
+}
+
