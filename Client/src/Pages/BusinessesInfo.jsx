@@ -26,6 +26,7 @@ export default function BusinessesInfo() {
       setFiltered(data);
     } catch (err) {
       console.error('Error fetching dive clubs:', err);
+      messageApi.error('Failed to fetch dive clubs');
     }
   };
 
@@ -41,10 +42,9 @@ export default function BusinessesInfo() {
   };
 
   const handleDelete = (club) => {
-  
     // Confirm dialog using native window.confirm for now
     if (window.confirm(`Delete ${club.name}?`)) {
-      fetch(`http://localhost:5001/api/users/${club.id}`, {
+      fetch(`http://localhost:5001/api/dive-clubs/${club.id}`, {
         method: 'DELETE',
       })
         .then(async (res) => {
@@ -52,12 +52,12 @@ export default function BusinessesInfo() {
             const err = await res.json();
             throw new Error(err.error || 'Delete failed');
           }
-          messageApi.success('User deleted successfully');
+          messageApi.success('Dive club deleted successfully');
           fetchClubs(); // refresh the list
         })
         .catch((err) => {
           console.error(err);
-          messageApi.error(err.message || 'Delete failed');
+          messageApi.error(err.message || 'Failed to delete dive club');
         });
     }
   };
@@ -69,24 +69,26 @@ export default function BusinessesInfo() {
 
   const handleSave = async () => {
     try {
-      const updatedUser = await form.validateFields();
+      const updatedClub = await form.validateFields();
 
-      const res = await fetch(`http://localhost:5001/api/users/${editingClub}`, {
+      const res = await fetch(`http://localhost:5001/api/dive-clubs/${editingClub}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedUser),
+        body: JSON.stringify(updatedClub),
       });
 
-      if (!res.ok) throw new Error('Failed to update user');
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Failed to update dive club');
+      }
 
-      messageApi.success('User updated successfully');
+      messageApi.success('Dive club updated successfully');
       setEditingClub(null);
       fetchClubs();
     } catch (err) {
       console.error(err);
-      messageApi.error('Update failed');
+      messageApi.error(err.message || 'Failed to update dive club');
     }
-    
   };
 
   // Columns definition for the table
@@ -135,38 +137,6 @@ export default function BusinessesInfo() {
     },
   ];
 
-  // const handleEdit = (user) => {
-  //   setEditingClub(user);
-  //   form.setFieldsValue(user);
-  // };
-
-  // const handleDelete = (user) => {
-  //   console.log('Delete clicked:', user);
-  //   // Add delete logic here later
-  // };
-
-  // const handleSave = async () => {
-  //   try {
-  //     const updatedClub = await form.validateFields();
-  //     const res = await fetch(`http://localhost:5001/api/users/${editingClub.id}`, {
-  //       method: 'PUT',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(updatedClub),
-  //     });
-
-  //     if (!res.ok) throw new Error('Failed to update user');
-
-  //     message.success('Club updated successfully');
-  //     setEditingClub(null);
-  //     fetchClubs(); // refresh data
-  //   } catch (err) {
-  //     console.error(err);
-  //     message.error('Update failed');
-  //   }
-  // };
-
   const expandRowToEdit = () => {
     return (
         <Form layout="vertical" form={form}>
@@ -206,12 +176,12 @@ export default function BusinessesInfo() {
   return (
     <>
       {contextHolder}
-      <div className="space-y-6">
+      <div className="space-y-6 min-w-0 overflow-hidden">
         <div className="flex justify-between items-center">
           <Title level={1}>Dive clubs Information</Title>
         </div>
 
-        <div className="p-4 rounded shadow">
+        <div className="p-4 rounded shadow min-w-0">
           <div className="flex justify-between items-center mb-4">
             <div className="text-sm font-bold">
               Total Clubs: <strong>{filtered.length}</strong>
@@ -231,6 +201,7 @@ export default function BusinessesInfo() {
             rowKey="id"
             pagination={{ pageSize: 12 }}
             scroll={{ x: 'max-content' }}
+            className="overflow-x-auto"
             expandedRowRender={(record) =>
               record.id === editingClub ? expandRowToEdit(record) : null
             }

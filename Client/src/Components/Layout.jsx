@@ -5,11 +5,11 @@ import '../index.css';
 
 export default function Layout({ children }) {
   return (
-    <div className="flex h-screen bg-dark-blue text-sky-custom">
+    <div className="flex h-screen text-sky-custom min-w-fit">
       <Sidebar />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 min-w-0">
         <Topbar />
-        <main className="flex-1 overflow-y-auto p-4">{children}</main>
+        <main className="flex-1 overflow-auto p-4">{children}</main>
       </div>
     </div>
   );

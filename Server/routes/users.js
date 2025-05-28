@@ -56,28 +56,25 @@ router.put('/users/:id', async (req, res) => {
   } catch (err) {
     console.error('Error updating user:', err);
     res.status(500).json({ error: 'Internal Server Error' });
-    // res.status(500).json({ error: err.message }); // just during debugging
   }
-
-  // delete User by id  
-  router.delete('/users/:id', async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
-  
-      if (result.rowCount === 0) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-  
-      res.json({ message: 'User deleted successfully' });
-    } catch (err) {
-      console.error('DELETE ERROR:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  });
-
 });
 
-  
-export default router
+// Delete user by ID
+router.delete('/users/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await db.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('DELETE ERROR:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+export default router;
