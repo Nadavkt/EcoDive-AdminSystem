@@ -53,7 +53,6 @@ export default function UsersInfo() {
   };
 
   const handleDelete = (user) => {
-  
     // Confirm dialog using native window.confirm for now
     if (window.confirm(`Delete ${user.first_name} ${user.last_name}?`)) {
       fetch(`http://localhost:5001/api/users/${user.id}`, {
@@ -61,15 +60,15 @@ export default function UsersInfo() {
       })
         .then(async (res) => {
           if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || 'Delete failed');
+            const errData = await res.json();
+            throw new Error(errData.error || 'Failed to delete user');
           }
           messageApi.success('User deleted successfully');
           fetchUsers(); // refresh the list
         })
         .catch((err) => {
-          console.error(err);
-          messageApi.error(err.message || 'Delete failed');
+          console.error('Delete error:', err);
+          messageApi.error(err.message || 'Failed to delete user');
         });
     }
   };
