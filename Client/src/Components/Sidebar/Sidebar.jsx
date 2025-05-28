@@ -18,12 +18,12 @@ export default function Sidebar() {
   const toggleSidebar = () => setCollapsed(!collapsed);
 
   return (
-    <div className="flex h-screen">
+    <div className="h-screen flex-none">
       {/* Sidebar */}
-      <div className={` text-white transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'} flex flex-col`}>
+      <div className={`text-white transition-all duration-300 h-full ${collapsed ? 'w-20' : 'w-64'} flex flex-col`}>
         
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-n border-gray-300">
+        <div className="flex items-center justify-between p-4 border-b border-gray-300">
           {!collapsed && <h1 className="text-xl font-bold">EcoDive</h1>}
           <button onClick={toggleSidebar}>
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -32,7 +32,6 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-6 overflow-y-auto">
-
           {/* Data Section */}
           <div>
             {!collapsed && <div className="text-xs text-gray-400 uppercase mb-2">Data</div>}

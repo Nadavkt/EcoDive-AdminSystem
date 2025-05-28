@@ -22,6 +22,17 @@
     color: white !important;
 }
 
+/* Calendar List description styling */
+:where(.ant-list-item-meta-description) {
+    color: rgb(76,197,255) !important;
+    text-shadow: 0 0 10px rgba(76, 197, 255, 0.6) !important;
+}
+
+/* Badge text in Calendar */
+:where(.ant-badge-status-text) {
+    color: white !important;
+}
+
 /* Make the ant calendar background transparent */
 .ant-picker-calendar {
     background: transparent !important;
@@ -63,4 +74,8 @@
 :where(.ant-form-item-label > label) {
     color: white !important;
 }
+
+
+
+
 

@@ -76,13 +76,9 @@ export default function Dashboard() {
       {/* Row 3 - Lists */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className=" shadow rounded p-4 h-82 text-white">
-          <h3 className="text-lg font-semibold">Recent Activity</h3>
+          <h3 className="text-lg font-semibold">Insights</h3>
           <ul className="text-sm ml-2 list-inside">
-            <li>User John updated profile</li>
-            <li>New business added</li>
-            <li>Password changed</li>
           </ul>
-          <a href="#" className="text-blue-500 text-sm mt-2 inline-block">View All</a>
         </div>
 
         <div className=" shadow rounded p-4">
