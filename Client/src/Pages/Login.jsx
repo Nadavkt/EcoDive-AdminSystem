@@ -71,7 +71,7 @@ export default function Login() {
                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
               </svg>
             </div>
-            <h1 className="text-3xl font-bold text-sky-custom mb-2">Welcome to EcoDive Admin Sys</h1>
+            <h1 className="text-3xl font-bold text-sky-custom mb-2">Welcome to EcoDive Admin System</h1>
             <p className="text-gray-400">Please enter your details</p>
           </div>
 
