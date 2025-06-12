@@ -156,7 +156,7 @@ export default function Sidebar() {
                   <span>Edit Profile</span>
                 </Link>
                 <Link
-                  to="/logout"
+                  to="/"
                   className="flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 transition-colors duration-200"
                   onClick={() => setShowProfileMenu(false)}
                 >
