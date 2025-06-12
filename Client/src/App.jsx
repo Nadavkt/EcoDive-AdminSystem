@@ -6,6 +6,8 @@ import Calendar from './Pages/Calendar';
 import TeamManagement from './Pages/TeamManagment';
 import UsersInfo from './Pages/UsersInfo';
 import BussinesesInfo from './Pages/BusinessesInfo';
+import AddUser from './Pages/AddUser';
+import AddBusiness from './Pages/AddBusiness';
 import Dashboard from './Pages/Dashboard';
 
 
@@ -20,6 +22,8 @@ function App() {
         <Route path="/team" element={<Layout><TeamManagement /></Layout>} />
         <Route path="/users" element={<Layout><UsersInfo /></Layout>} />
         <Route path="/businesses" element={<Layout><BussinesesInfo /></Layout>} />
+        <Route path="/add-user" element={<Layout><AddUser /></Layout>} />
+        <Route path="/add-business" element={<Layout><AddBusiness /></Layout>} />
       </Routes>
     </BrowserRouter>
   )

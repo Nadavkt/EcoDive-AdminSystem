@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 html,
 body,
@@ -19,6 +22,36 @@ body,
 .text-sky-custom {
   color: rgb(76,197,255);
   text-shadow: 0 0 10px rgba(76, 197, 255, 0.6);
+}
+
+/* Default dark theme */
+body {
+  /* @apply bg-dark-blue text-white transition-colors duration-300; */
+}
+
+/* Light theme */
+body.light-theme {
+  @apply bg-white text-black;
+}
+
+/* Light theme overrides for components */
+body.light-theme .sidebar {
+  @apply bg-white text-black;
+}
+
+body.light-theme .sidebar-link {
+  @apply text-gray-700 hover:text-blue-600;
+}
+
+body.light-theme .topbar {
+  @apply bg-white text-black border-b border-gray-200;
+}
+
+/* Transition for all theme changes */
+.sidebar,
+.topbar,
+.content-area {
+  @apply transition-colors duration-300;
 }
   
 

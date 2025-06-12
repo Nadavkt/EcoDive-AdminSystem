@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Input, Button, Form, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faIdCard, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding, faMapMarkerAlt, faPhone, faGlobe, faFileText } from '@fortawesome/free-solid-svg-icons';
 
-const AddUser = () => {
+const AddBusiness = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -37,13 +37,9 @@ const AddUser = () => {
   };
 
   const onFinish = async (values) => {
-    console.log('Form submitted with values:', values); // Debug log
     setLoading(true);
-    
     try {
-      console.log('Sending data to server:', values); // Debug log
-
-      const response = await fetch('http://localhost:5001/api/users', {
+      const response = await fetch('http://localhost:5001/api/dive-clubs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,33 +47,14 @@ const AddUser = () => {
         body: JSON.stringify(values),
       });
 
-      console.log('Response status:', response.status); // Debug log
-      console.log('Response headers:', Object.fromEntries(response.headers.entries())); // Debug log
-
       if (response.ok) {
-        const responseData = await response.json();
-        console.log('Success response:', responseData); // Debug log
-        messageApi.success('User added successfully!');
+        messageApi.success('Business added successfully!');
         form.resetFields();
       } else {
-        // Get the error message from the response
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch (parseError) {
-          console.error('Failed to parse error response:', parseError);
-          errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
-        }
-        console.log('Error response:', errorData); // Debug log
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+        throw new Error('Failed to add business');
       }
     } catch (error) {
-      console.error('Request failed:', error); // Debug log
-      if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
-        messageApi.error('Cannot connect to server. Please check if the server is running on http://localhost:5001');
-      } else {
-        messageApi.error('Error adding user: ' + error.message);
-      }
+      messageApi.error('Error adding business: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -94,8 +71,8 @@ const AddUser = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-white mb-16 relative z-10 text-center"
       >
-        <h1 className="text-4xl font-bold mb-3">Add New User</h1>
-        <p className="text-gray-300 text-lg">Create a new user account in the system</p>
+        <h1 className="text-4xl font-bold mb-3">Add New Business</h1>
+        <p className="text-gray-300 text-lg">Register a new dive club or business in the system</p>
       </motion.div>
 
       <motion.div
@@ -113,13 +90,13 @@ const AddUser = () => {
           >
             <motion.div variants={inputVariants}>
               <Form.Item
-                name="firstName"
-                rules={[{ required: true, message: 'Please enter your first name!' }]}
+                name="name"
+                rules={[{ required: true, message: 'Please enter the business name!' }]}
                 className="mb-10"
               >
                 <Input
-                  prefix={<FontAwesomeIcon icon={faUser} className="text-gray-400 mr-2" />}
-                  placeholder="First Name"
+                  prefix={<FontAwesomeIcon icon={faBuilding} className="text-gray-400 mr-2" />}
+                  placeholder="Business Name"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
                 />
               </Form.Item>
@@ -127,13 +104,13 @@ const AddUser = () => {
 
             <motion.div variants={inputVariants}>
               <Form.Item
-                name="lastName"
-                rules={[{ required: true, message: 'Please enter your last name!' }]}
+                name="city"
+                rules={[{ required: true, message: 'Please enter the city!' }]}
                 className="mb-10"
               >
                 <Input
-                  prefix={<FontAwesomeIcon icon={faUser} className="text-gray-400 mr-2" />}
-                  placeholder="Last Name"
+                  prefix={<FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400 mr-2" />}
+                  placeholder="City"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
                 />
               </Form.Item>
@@ -141,16 +118,13 @@ const AddUser = () => {
 
             <motion.div variants={inputVariants}>
               <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: 'Please enter your email!' },
-                  { type: 'email', message: 'Please enter a valid email!' }
-                ]}
+                name="address"
+                rules={[{ required: true, message: 'Please enter the address!' }]}
                 className="mb-10"
               >
                 <Input
-                  prefix={<FontAwesomeIcon icon={faEnvelope} className="text-gray-400 mr-2" />}
-                  placeholder="Email"
+                  prefix={<FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400 mr-2" />}
+                  placeholder="Address"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
                 />
               </Form.Item>
@@ -158,13 +132,13 @@ const AddUser = () => {
 
             <motion.div variants={inputVariants}>
               <Form.Item
-                name="idNumber"
-                rules={[{ required: true, message: 'Please enter your ID number!' }]}
+                name="phone"
+                rules={[{ required: true, message: 'Please enter the phone number!' }]}
                 className="mb-10"
               >
                 <Input
-                  prefix={<FontAwesomeIcon icon={faIdCard} className="text-gray-400 mr-2" />}
-                  placeholder="ID Number"
+                  prefix={<FontAwesomeIcon icon={faPhone} className="text-gray-400 mr-2" />}
+                  placeholder="Phone Number"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
                 />
               </Form.Item>
@@ -172,14 +146,27 @@ const AddUser = () => {
 
             <motion.div variants={inputVariants}>
               <Form.Item
-                name="password"
-                rules={[{ required: true, message: 'Please enter your password!' }]}
+                name="website"
+                className="mb-10"
+              >
+                <Input
+                  prefix={<FontAwesomeIcon icon={faGlobe} className="text-gray-400 mr-2" />}
+                  placeholder="Website (optional)"
+                  className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                />
+              </Form.Item>
+            </motion.div>
+
+            <motion.div variants={inputVariants}>
+              <Form.Item
+                name="description"
                 className="mb-12"
               >
-                <Input.Password
-                  prefix={<FontAwesomeIcon icon={faLock} className="text-gray-400 mr-2" />}
-                  placeholder="Password"
-                  className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                <Input.TextArea
+                  prefix={<FontAwesomeIcon icon={faFileText} className="text-gray-400 mr-2" />}
+                  placeholder="Description (optional)"
+                  rows={4}
+                  className="rounded-2xl text-base bg-white/5 border border-white/10 text-white px-6 py-3"
                 />
               </Form.Item>
             </motion.div>
@@ -194,7 +181,7 @@ const AddUser = () => {
                 loading={loading}
                 className="submit-button h-12 w-full bg-blue-500 hover:bg-blue-600 border-none rounded-full text-white font-medium text-base transition-all duration-300"
               >
-                Add User
+                Add Business
               </Button>
             </motion.div>
           </Form>
@@ -205,4 +192,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default AddBusiness; 

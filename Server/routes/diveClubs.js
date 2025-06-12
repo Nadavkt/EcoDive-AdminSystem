@@ -13,6 +13,41 @@ router.get('/dive-clubs', async (req, res) => {
     }
 });
 
+// Create new dive club
+router.post('/dive-clubs', async (req, res) => {
+  const { name, city, address, phone, website, description } = req.body;
+
+  // Validate required fields
+  if (!name || !city || !address || !phone) {
+    return res.status(400).json({ 
+      error: 'Missing required fields. Name, city, address, and phone are required.' 
+    });
+  }
+
+  try {
+    const result = await db.query(
+      'INSERT INTO dive_clubs (name, city, address, phone, website, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, city, address, phone, website || null, description || null]
+    );
+
+    res.status(201).json({
+      message: 'Dive club created successfully',
+      diveClub: result.rows[0]
+    });
+  } catch (err) {
+    console.error('Error creating dive club:', err.message);
+    
+    // Handle unique constraint violations
+    if (err.code === '23505') {
+      return res.status(409).json({ 
+        error: 'A dive club with this information already exists.' 
+      });
+    }
+    
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Update dive club by ID
 router.put('/dive-clubs/:id', async (req, res) => {
   const { id } = req.params;
