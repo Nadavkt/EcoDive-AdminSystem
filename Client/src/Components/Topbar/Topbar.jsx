@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SearchOutlined, BulbOutlined, QuestionOutlined } from '@ant-design/icons';
+import { SearchOutlined, SunOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 export default function Topbar() {
   const [isFocused, setIsFocused] = useState(false);
@@ -37,13 +37,13 @@ export default function Topbar() {
           className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
                    bg-white text-dark-blue hover:bg-gray-100"
         >
-          <BulbOutlined className="text-lg" />
+          <SunOutlined className="text-lg" />
         </button>
         <button
           className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110
                    bg-white text-dark-blue hover:bg-gray-100"
         >
-          <QuestionOutlined className="text-lg" />
+          <QuestionCircleOutlined className="text-lg" />
         </button>
       </div>
     </div>
