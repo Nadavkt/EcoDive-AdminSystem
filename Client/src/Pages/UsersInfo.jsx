@@ -6,7 +6,8 @@ import {
   Tooltip,
   message,
   Form,
-  Button
+  Button,
+  Popconfirm
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../Styles/antDesignOverride.css';
@@ -52,24 +53,21 @@ export default function UsersInfo() {
     setFiltered(filteredData);
   };
 
-  const handleDelete = (user) => {
-    // Confirm dialog using native window.confirm for now
-    if (window.confirm(`Delete ${user.first_name} ${user.last_name}?`)) {
-      fetch(`http://localhost:5001/api/users/${user.id}`, {
+  const handleDelete = async (user) => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/users/${user.id}`, {
         method: 'DELETE',
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.error || 'Failed to delete user');
-          }
-          messageApi.success('User deleted successfully');
-          fetchUsers(); // refresh the list
-        })
-        .catch((err) => {
-          console.error('Delete error:', err);
-          messageApi.error(err.message || 'Failed to delete user');
-        });
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Failed to delete user');
+      }
+      messageApi.success('User deleted successfully');
+      fetchUsers(); // refresh the list
+    } catch (err) {
+      console.error('Delete error:', err);
+      messageApi.error(err.message || 'Failed to delete user');
     }
   };
 
@@ -144,10 +142,15 @@ export default function UsersInfo() {
             />
           </Tooltip>
           <Tooltip title="Delete">
-            <DeleteOutlined
-              className="cursor-pointer"
-              onClick={() => handleDelete(record)}
-            />
+            <Popconfirm
+              title="Delete User"
+              description={`Are you sure you want to delete ${record.first_name} ${record.last_name}?`}
+              onConfirm={() => handleDelete(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined className="cursor-pointer" />
+            </Popconfirm>
           </Tooltip>
         </div>
       ),

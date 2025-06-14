@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message } from 'antd';
+import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../Styles/antDesignOverride.css'
 
@@ -41,24 +41,21 @@ export default function BusinessesInfo() {
     setFiltered(filteredData);
   };
 
-  const handleDelete = (club) => {
-    // Confirm dialog using native window.confirm for now
-    if (window.confirm(`Delete ${club.name}?`)) {
-      fetch(`http://localhost:5001/api/dive-clubs/${club.id}`, {
+  const handleDelete = async (club) => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/dive-clubs/${club.id}`, {
         method: 'DELETE',
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const err = await res.json();
-            throw new Error(err.error || 'Delete failed');
-          }
-          messageApi.success('Dive club deleted successfully');
-          fetchClubs(); // refresh the list
-        })
-        .catch((err) => {
-          console.error(err);
-          messageApi.error(err.message || 'Failed to delete dive club');
-        });
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || 'Delete failed');
+      }
+      messageApi.success('Dive club deleted successfully');
+      fetchClubs(); // refresh the list
+    } catch (err) {
+      console.error(err);
+      messageApi.error(err.message || 'Failed to delete dive club');
     }
   };
 
@@ -128,9 +125,15 @@ export default function BusinessesInfo() {
             />
           </Tooltip>
           <Tooltip title="Delete">
-            <DeleteOutlined
-              onClick={() => handleDelete(record)}
-            />
+            <Popconfirm
+              title="Delete Dive Club"
+              description={`Are you sure you want to delete ${record.name}?`}
+              onConfirm={() => handleDelete(record)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined />
+            </Popconfirm>
           </Tooltip>
         </div>
       ),
