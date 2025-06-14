@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Login from './Pages/Login';
 import Layout from './Components/Layout';
-import Calendar from './Pages/Calendar';
+import Calendar from './Pages/Events/Calendar';
 import TeamManagement from './Pages/TeamManagment';
 import UsersInfo from './Pages/UsersInfo';
 import BussinesesInfo from './Pages/BusinessesInfo';

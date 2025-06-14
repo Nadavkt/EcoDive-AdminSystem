@@ -188,7 +188,7 @@ export default function UsersInfo() {
     {contextHolder}
       <div className="space-y-6 ">
         <div className="flex justify-between items-center">
-          <Title level={1}>Users Information</Title>
+          <Title style={{fontSize: '50px'}}>Users Information</Title>
         </div>
 
         <div className="p-4 rounded shadow">

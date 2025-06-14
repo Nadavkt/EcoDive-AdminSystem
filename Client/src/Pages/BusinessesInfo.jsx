@@ -178,7 +178,7 @@ export default function BusinessesInfo() {
       {contextHolder}
       <div className="space-y-6 min-w-0 overflow-hidden">
         <div className="flex justify-between items-center">
-          <Title level={1}>Dive clubs Information</Title>
+          <Title style={{fontSize: '50px'}}>Dive clubs Information</Title>
         </div>
 
         <div className="p-4 rounded shadow min-w-0">

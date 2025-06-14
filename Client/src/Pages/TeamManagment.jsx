@@ -41,7 +41,7 @@ export default function TeamManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <Title level={1}>Team Management</Title>
+        <Title style={{fontSize: '50px'}}>Team Management</Title>
         {/* <Tooltip title={role !== 'Admin' ? 'Only Admins can add members' : ''}>
           <Button
             type="primary"
