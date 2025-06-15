@@ -133,10 +133,18 @@ export default function Dashboard() {
           className="shadow rounded p-4 h-82 text-white"
           variants={itemVariants}
         >
-          <h3 className="text-lg font-semibold">Insights</h3>
+          <h3 className="text-lg font-semibold">AI Insights</h3>
           <ul className="text-sm ml-2 list-inside">
+            <li className='w-fit mt-2 text-white rounded-full px-6 py-2'>
+              Database backup failed last night
+            </li>
+            <li className='w-fit mt-4 text-white rounded-full px-6 py-2'>
+              High login activity detected
+            </li>
+            <li className='w-fit mt-4 text-white rounded-full px-6 py-2'>
+              Scheduled maintenance on Friday
+            </li>
           </ul>
-          <a href="#" className="text-blue-500 text-sm mt-2 inline-block">View All</a>
         </motion.div>
 
         <motion.div 
@@ -144,10 +152,10 @@ export default function Dashboard() {
           variants={itemVariants}
         >
           <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
-          <div className="flex flex-col space-y-2 mt-2">
-            <button className="bg-blue-500 text-white py-1 rounded">Add Event</button>
-            <button className="bg-blue-500 text-white py-1 rounded">Add New Member</button>
-            <button className="bg-blue-500 text-white py-1 rounded">Create Report</button>
+          <div className="flex flex-col space-y-6 mt-6">
+            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Add Event</button>
+            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Add New Member</button>
+            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Create Report</button>
           </div>
         </motion.div>
 
@@ -155,12 +163,10 @@ export default function Dashboard() {
           className="shadow rounded p-4 width"
           variants={itemVariants}
         >
-          <h3 className="text-lg font-semibold text-white">System Alerts</h3>
+          <h3 className="text-lg font-semibold text-white">Activity Notifications</h3>
           <ul className="text-sm ml-2 list-inside">
-            <li className='w-fit mt-2 bg-red-500 text-white rounded-full px-6 py-2'>Database backup failed last night</li>
-            <li className='w-fit mt-4 bg-orange-500 text-white rounded-full px-6 py-2'>High login activity detected</li>
-            <li className='w-fit mt-4 bg-green-600 text-white rounded-full px-6 py-2'>Scheduled maintenance on Friday</li>
           </ul>
+          <a href="#" className="text-blue-500 text-sm mt-2 inline-block">View All</a>
         </motion.div>
       </motion.div>
     </>
