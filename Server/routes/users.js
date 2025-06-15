@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db.js';
+import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
@@ -37,9 +38,13 @@ router.post('/users', async (req, res) => {
   }
 
   try {
+    // Hash the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const result = await db.query(
       'INSERT INTO users (first_name, last_name, email, id_number, password, profile_image, license_front, license_back, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) RETURNING id, first_name, last_name, email, id_number, created_at',
-      [firstName, lastName, email, idNumber, password, null, null, null]
+      [firstName, lastName, email, idNumber, hashedPassword, null, null, null]
     );
 
     res.status(201).json({
@@ -130,6 +135,54 @@ router.delete('/users/:id', async (req, res) => {
   } catch (err) {
     console.error('DELETE ERROR:', err);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Login route
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validate required fields
+  if (!email || !password) {
+    return res.status(400).json({ 
+      error: 'Email and password are required.' 
+    });
+  }
+
+  try {
+    // Find user by email
+    const result = await db.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ 
+        error: 'Invalid email or password.' 
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Compare password with hashed password
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ 
+        error: 'Invalid email or password.' 
+      });
+    }
+
+    // Don't send the password back to the client
+    const { password: _, ...userWithoutPassword } = user;
+
+    res.json({
+      message: 'Login successful',
+      user: userWithoutPassword
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

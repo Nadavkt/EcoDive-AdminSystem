@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import '../index.css';
 
 export default function Login() {
@@ -7,6 +9,8 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
   const [errors, setErrors] = useState({ 
     email: '', 
     passwordLength: '',
@@ -51,12 +55,35 @@ export default function Login() {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitted(true);
+    setLoginError('');
+
     if (validate()) {
-      console.log('Logging in...');
-      navigate('/dashboard');
+      try {
+        const response = await fetch('http://localhost:5001/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        console.log('Login response:', { status: response.status, data }); // Debug log
+
+        if (response.ok) {
+          // Store user data in localStorage or state management
+          localStorage.setItem('user', JSON.stringify(data.user));
+          navigate('/dashboard');
+        } else {
+          setLoginError(data.error || 'Login failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        setLoginError('An error occurred. Please try again later.');
+      }
     }
   };
 
@@ -76,6 +103,12 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {loginError && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-red-500 text-sm">
+                {loginError}
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-sky-custom mb-2">Email</label>
               <input
@@ -90,13 +123,22 @@ export default function Login() {
 
             <div>
               <label className="block text-sm font-medium text-sky-custom mb-2">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-opacity-10 bg-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black"
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-opacity-10 bg-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="w-5 h-5" />
+                </button>
+              </div>
               {isSubmitted && errors.passwordLength && <p className="mt-1 text-red-500 text-sm">{errors.passwordLength}</p>}
               {isSubmitted && errors.passwordUpperCase && <p className="mt-1 text-red-500 text-sm">{errors.passwordUpperCase}</p>}
               {isSubmitted && errors.passwordSpecialChar && <p className="mt-1 text-red-500 text-sm">{errors.passwordSpecialChar}</p>}
