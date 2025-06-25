@@ -11,7 +11,7 @@ export default function Topbar() {
   };
 
   return (
-    <div className="flex items-center justify-between shadow px-6 py-4">
+    <div className="flex items-center justify-between px-6 py-4">
       <div className="w-1/3"></div>
 
       <div className="w-1/3 text-center relative">

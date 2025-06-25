@@ -12,15 +12,22 @@ import {
   LogoutOutlined,
   EditOutlined
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(true);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
-  // You can replace this URL with the actual user's profile image URL
-  const profileImageUrl = 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop';
+  const navigate = useNavigate();
+  
+  // Get user data from localStorage
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const userRole = user?.role;
+
+  // Debug logging
+  console.log('Sidebar user data:', user);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -35,11 +42,15 @@ export default function Sidebar() {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/');
+  };
+
   const toggleSidebar = () => setCollapsed(!collapsed);
 
   return (
     <div className="h-screen flex-none">
-      {/* Sidebar */}
       <motion.div 
         className={`text-white h-full ${collapsed ? 'w-20' : 'w-64'} flex flex-col`}
         animate={{ width: collapsed ? 80 : 256 }}
@@ -51,7 +62,7 @@ export default function Sidebar() {
         }}
       >
         {/* Header */}
-        <div className={`h-[72px] flex items-center ${collapsed ? 'justify-center' : 'justify-between px-4'} border-b border-gray-300`}>
+        <div className={`h-[72px] flex items-center ${collapsed ? 'justify-center' : 'justify-between px-4'} `}>
           <motion.h1 
             initial={false}
             animate={{ opacity: collapsed ? 0 : 1 }}
@@ -117,34 +128,44 @@ export default function Sidebar() {
             <div className="space-y-3">
               <SidebarLink to="/add-user" icon={<UserAddOutlined />} text="Add User" collapsed={collapsed} />
               <SidebarLink to="/add-business" icon={<PlusOutlined />} text="Add Business" collapsed={collapsed} />
+              {userRole === 'Admin' && (
+                <SidebarLink 
+                  to="/add-team-member" 
+                  icon={<UserAddOutlined />} 
+                  text="Add Team Member" 
+                  collapsed={collapsed} 
+                />
+              )}
             </div>
           </div>
         </nav>
 
-        {/* Profile Section - Fixed at bottom */}
-        <div className="p-4" ref={profileMenuRef}>
-          <div className="relative">
+        {/* Profile Section */}
+        <div className="p-4 ">
+          <div className="relative" ref={profileMenuRef}>
             <button
-              className="flex items-center gap-3 hover:text-blue-400 transition-colors duration-200 w-full group"
               onClick={() => setShowProfileMenu(!showProfileMenu)}
+              className="flex items-center space-x-3 w-full"
             >
-              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-colors duration-200">
+              {user?.profile_image ? (
                 <img
-                  src={profileImageUrl}
+                  src={`http://localhost:5001/${user.profile_image}`}
                   alt="Profile"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = ''; // Clear the broken image
-                    e.target.onerror = null; // Prevent infinite loop
-                    e.target.className = 'hidden'; // Hide the img
-                    e.target.parentElement.innerHTML = '<div class="w-full h-full bg-gray-600 flex items-center justify-center"><UserOutlined className="text-white" /></div>';
-                  }}
+                  className="w-10 h-10 rounded-full object-cover"
                 />
-              </div>
-              {!collapsed && <span className="flex-1 text-left">Settings</span>}
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
+                  {user?.first_name?.[0] || ''}{user?.last_name?.[0] || ''}
+                </div>
+              )}
+              {!collapsed && (
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium">{user?.first_name} {user?.last_name}</span>
+                  <span className="text-xs text-gray-400 capitalize">{user?.role}</span>
+                </div>
+              )}
             </button>
 
-            {/* Dropdown Menu */}
             {showProfileMenu && (
               <div className="absolute bottom-full left-0 mb-2 w-48 bg-dark-blue rounded-lg shadow-lg py-1 border border-gray-700">
                 <Link
@@ -155,14 +176,13 @@ export default function Sidebar() {
                   <EditOutlined />
                   <span>Edit Profile</span>
                 </Link>
-                <Link
-                  to="/"
-                  className="flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 transition-colors duration-200"
-                  onClick={() => setShowProfileMenu(false)}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2 text-red-400 hover:text-red-300 transition-colors duration-200 w-full"
                 >
                   <LogoutOutlined />
                   <span>Log Out</span>
-                </Link>
+                </button>
               </div>
             )}
           </div>
@@ -173,39 +193,14 @@ export default function Sidebar() {
 }
 
 // Reusable Sidebar Link component
-function SidebarLink({ to, icon, text, collapsed, className = "" }) {
+function SidebarLink({ to, icon, text, collapsed, className = '' }) {
   return (
-    <motion.div 
-      whileHover={{ x: 5 }} 
-      whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+    <Link
+      to={to}
+      className={`flex items-center space-x-3 text-gray-300 hover:text-white transition-colors duration-200 ${className}`}
     >
-      <Link
-        to={to}
-        className={`flex items-center gap-4 hover:text-blue-400 transition-colors duration-200 text-lg ${className}`}
-      >
-        <motion.span
-          whileHover={{ rotate: 5 }}
-          animate={{ 
-            fontSize: collapsed ? "24px" : "20px"
-          }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center justify-center"
-          style={{ minWidth: collapsed ? "24px" : "20px" }}
-        >
-          {icon}
-        </motion.span>
-        {!collapsed && (
-          <motion.span
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            transition={{ duration: 0.2 }}
-          >
-            {text}
-          </motion.span>
-        )}
-      </Link>
-    </motion.div>
+      <span className="text-xl">{icon}</span>
+      {!collapsed && <span>{text}</span>}
+    </Link>
   );
 }

@@ -103,13 +103,18 @@ export default function UsersInfo() {
       title: 'Profile',
       dataIndex: 'profile_image',
       key: 'profile_image',
-      render: (image) => {
+      render: (image, record) => {
         console.log('image src:', image)
-        return (
+        return image ? (
           <img
-           src={image}
+            src={`http://localhost:5001/${image}`}
             className="h-10 w-10 rounded-full object-cover"
+            alt={`${record.first_name} ${record.last_name}`}
           />
+        ) : (
+          <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+            {record.first_name?.[0] || ''}{record.last_name?.[0] || ''}
+          </div>
         )
       },
     },

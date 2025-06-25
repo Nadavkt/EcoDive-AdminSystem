@@ -37,11 +37,11 @@ const AddUser = () => {
   };
 
   const onFinish = async (values) => {
-    console.log('Form submitted with values:', values); // Debug log
+    //console.log('Form submitted with values:', values); // Debug log
     setLoading(true);
     
     try {
-      console.log('Sending data to server:', values); // Debug log
+      //console.log('Sending data to server:', values); // Debug log
 
       const response = await fetch('http://localhost:5001/api/users', {
         method: 'POST',
@@ -51,12 +51,12 @@ const AddUser = () => {
         body: JSON.stringify(values),
       });
 
-      console.log('Response status:', response.status); // Debug log
-      console.log('Response headers:', Object.fromEntries(response.headers.entries())); // Debug log
+      //console.log('Response status:', response.status); // Debug log
+      //console.log('Response headers:', Object.fromEntries(response.headers.entries())); // Debug log
 
       if (response.ok) {
-        const responseData = await response.json();
-        console.log('Success response:', responseData); // Debug log
+        // const responseData = await response.json();
+        // console.log('Success response:', responseData); // Debug log
         messageApi.success('User added successfully!');
         form.resetFields();
       } else {

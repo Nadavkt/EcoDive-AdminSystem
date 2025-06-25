@@ -74,9 +74,9 @@ export default function Login() {
         console.log('Login response:', { status: response.status, data }); // Debug log
 
         if (response.ok) {
-          // Store user data in localStorage or state management
+          // Store user data including role
           localStorage.setItem('user', JSON.stringify(data.user));
-          navigate('/dashboard');
+      navigate('/dashboard');
         } else {
           setLoginError(data.error || 'Login failed. Please try again.');
         }
@@ -124,13 +124,13 @@ export default function Login() {
             <div>
               <label className="block text-sm font-medium text-sky-custom mb-2">Password</label>
               <div className="relative">
-                <input
+              <input
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-opacity-10 bg-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black"
-                  placeholder="••••••••"
-                />
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 bg-opacity-10 bg-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-black"
+                placeholder="••••••••"
+              />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
