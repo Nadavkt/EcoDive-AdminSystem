@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Typography, Select, Card, Avatar, Tooltip, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import EditTeamMember from './EditTeamMember';
 import '../../Styles/antDesignOverride.css';
 
 const { Title } = Typography;
@@ -11,9 +12,18 @@ export default function TeamManagement() {
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState('');
   const [messageApi, contextHolder] = message.useMessage();
+  const [userRole, setUserRole] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedMember, setSelectedMember] = useState(null);
 
   useEffect(() => {
     fetchTeam();
+    // Get current user data from localStorage
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    setCurrentUser(user);
+    setUserRole(user?.role || '');
   }, []);
 
   const fetchTeam = async () => {
@@ -52,6 +62,30 @@ export default function TeamManagement() {
       console.error('Error deleting team member:', err);
       messageApi.error('Error deleting team member:', err);
     }
+  };
+
+  const handleEditClick = (member) => {
+    setSelectedMember(member);
+    setIsEditModalVisible(true);
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
+    setSelectedMember(null);
+  };
+
+  const handleEditSuccess = () => {
+    setIsEditModalVisible(false);
+    setSelectedMember(null);
+    fetchTeam(); // Refresh the team list
+  };
+
+  // Check if current user is admin (handle both 'Admin' and 'admin' cases)
+  const isAdmin = userRole?.toLowerCase() === 'admin';
+
+  // Check if a member is the current logged-in user
+  const isCurrentUser = (member) => {
+    return currentUser && member.id === currentUser.id;
   };
 
   return (
@@ -131,32 +165,52 @@ export default function TeamManagement() {
                     {member.role}
                   </p>
 
-                  {/* Action buttons */}
-                  <div className="flex gap-4 mt-2">
-                    <Tooltip title="Edit">
-                      <button className="p-2 transition-colors">
-                        <EditOutlined className="text-xl" />
-                      </button>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <Popconfirm
-                        title="Delete Team Member"
-                        description={`Are you sure you want to delete ${member.first_name} ${member.last_name}?`}
-                        onConfirm={() => handleDelete(member)}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <button className="p-2 transition-colors">
-                          <DeleteOutlined className="text-xl" />
+                  {/* Action buttons - only show for admin users and not for current user */}
+                  {isAdmin && !isCurrentUser(member) && (
+                    <div className="flex gap-4 mt-2">
+                      <Tooltip title="Edit">
+                        <button 
+                          className="p-2 transition-colors"
+                          onClick={() => handleEditClick(member)}
+                        >
+                          <EditOutlined className="text-xl" />
                         </button>
-                      </Popconfirm>
-                    </Tooltip>
-                  </div>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <Popconfirm
+                          title="Delete Team Member"
+                          description={`Are you sure you want to delete ${member.first_name} ${member.last_name}?`}
+                          onConfirm={() => handleDelete(member)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <button className="p-2 transition-colors">
+                            <DeleteOutlined className="text-xl" />
+                          </button>
+                        </Popconfirm>
+                      </Tooltip>
+                    </div>
+                  )}
+
+                  {/* Show indicator for current user */}
+                  {isCurrentUser(member) && (
+                    <div className="mt-2">
+                      <span className="text-blue-500 text-sm font-medium">(You)</span>
+                    </div>
+                  )}
                 </div>
               </Card>
             ))}
           </div>
         </div>
+
+        {/* Edit Team Member Modal */}
+        <EditTeamMember
+          isModalVisible={isEditModalVisible}
+          onCancel={handleEditCancel}
+          onSuccess={handleEditSuccess}
+          memberData={selectedMember}
+        />
       </div>
     </>
   );

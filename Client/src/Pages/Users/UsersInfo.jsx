@@ -10,8 +10,8 @@ import {
   Popconfirm
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import '../Styles/antDesignOverride.css';
-import '../Styles/tailwindOverride.css';
+import '../../Styles/antDesignOverride.css';
+import '../../Styles/tailwindOverride.css';
 
 const { Title } = Typography;
 
@@ -104,7 +104,7 @@ export default function UsersInfo() {
       dataIndex: 'profile_image',
       key: 'profile_image',
       render: (image, record) => {
-        console.log('image src:', image)
+        // console.log('image src:', image)
         return image ? (
           <img
             src={`http://localhost:5001/${image}`}
@@ -232,4 +232,4 @@ export default function UsersInfo() {
       </div>
     </>
   );
-}
+} 

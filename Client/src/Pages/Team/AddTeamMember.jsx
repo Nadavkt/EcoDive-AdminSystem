@@ -93,7 +93,7 @@ export default function AddTeamMember() {
           animate="visible"
           className="max-w-xl mx-auto relative z-10 w-full"
         >
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-16 border border-white/10 shadow-2xl">
+          <div data-test='form' className="bg-white/10 backdrop-blur-lg rounded-2xl p-16 border border-white/10 shadow-2xl">
             <Form
               form={form}
               layout="vertical"
@@ -171,7 +171,11 @@ export default function AddTeamMember() {
                   <Select
                     placeholder="Select role"
                     className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white"
-                    dropdownClassName="bg-white/10 backdrop-blur-lg border border-white/10"
+                    classNames={{
+                      popup: {
+                        root: "bg-white/10 backdrop-blur-lg border border-white/10"
+                      }
+                    }}
                   >
                     <Option value="Admin">Admin</Option>
                     <Option value="Viewer">Viewer</Option>

@@ -54,7 +54,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Title style={{color: 'white', fontSize: '50px'}}>Dashboard</Title>
+      <Title data-test='title' style={{color: 'white', fontSize: '50px'}}>Dashboard</Title>
       <p className="text-white mb-6">Small step for the server, big step for the ocean !!</p>
 
       {/* Row 1 - Counters */}
@@ -171,4 +171,4 @@ export default function Dashboard() {
       </motion.div>
     </>
   );
-}
+} 

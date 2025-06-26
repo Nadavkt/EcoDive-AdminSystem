@@ -2,16 +2,19 @@ import React from 'react';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Login from './Pages/Login';
 import Layout from './Components/Layout';
+import Dashboard from './Pages/Dashboard';
+import EditProfile from './Pages/Profile/EditProfile';
+import ProtectedRoute from './Components/ProtectedRoute';
 import Calendar from './Pages/Events/Calendar';
 import TeamManagement from './Pages/Team/TeamManagement';
-import UsersInfo from './Pages/UsersInfo';
-import BussinesesInfo from './Pages/BusinessesInfo';
-import AddUser from './Pages/AddUser';
-import AddBusiness from './Pages/AddBusiness';
-import Dashboard from './Pages/Dashboard';
 import AddTeamMember from './Pages/Team/AddTeamMember';
-import EditProfile from './Pages/EditProfile';
-import ProtectedRoute from './Components/ProtectedRoute';
+import UsersInfo from './Pages/Users/UsersInfo';
+import AddUser from './Pages/Users/AddUser';
+import BussinesesInfo from './Pages/DiveClubs/BusinessesInfo';
+import AddBusiness from './Pages/DiveClubs/AddBusiness';
+
+
+
 
 function App() {
 

@@ -5,7 +5,7 @@ import { Input, Button, Upload, message, Form } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faUserTag } from '@fortawesome/free-solid-svg-icons';
-import '../Styles/antDesignOverride.css';
+import '../../Styles/antDesignOverride.css';
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -14,6 +14,8 @@ export default function EditProfile() {
   const [currentImage, setCurrentImage] = useState('');
   const [loading, setLoading] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const [uploadKey, setUploadKey] = useState(0); // Key to force Upload component re-render
+  const [fileList, setFileList] = useState([]); // Track file list for Upload component
 
   const formVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -59,19 +61,20 @@ export default function EditProfile() {
       role: user.role || ''
     });
     setCurrentImage(user.profile_image || '');
+    // Reset profileImage state when component mounts
+    setProfileImage(null);
+    // Reset fileList state
+    setFileList([]);
+    // Reset upload key to force Upload component re-render
+    setUploadKey(prev => prev + 1);
   }, [navigate, form]);
 
   const handleImageUpload = (info) => {
-    if (info.file.status === 'done') {
-      setProfileImage(info.file.originFileObj);
-      messageApi.success('Image uploaded successfully');
-    } else if (info.file.status === 'error') {
-      messageApi.error('Image upload failed');
-    }
+    // Update fileList state
+    setFileList(info.fileList);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setLoading(true);
 
     try {
@@ -104,6 +107,10 @@ export default function EditProfile() {
         // Update localStorage with new user data
         localStorage.setItem('user', JSON.stringify(data));
         messageApi.success('Profile updated successfully');
+        // Reset profileImage and upload component for next use
+        setProfileImage(null);
+        setFileList([]);
+        setUploadKey(prev => prev + 1);
         navigate('/dashboard');
       } else {
         messageApi.error(data.error || 'Failed to update profile');
@@ -162,19 +169,27 @@ export default function EditProfile() {
                   )}
                 </div>
                 
-                <Upload
-                  name="profile_image"
-                  showUploadList={false}
-                  beforeUpload={() => false}
-                  onChange={handleImageUpload}
-                >
-                  <Button 
-                    icon={<UploadOutlined />}
-                    className="h-12 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-full"
+                <div className="flex gap-4 justify-center">
+                  <Upload
+                    key={uploadKey}
+                    name="profile_image"
+                    showUploadList={false}
+                    beforeUpload={(file) => {
+                      setProfileImage(file);
+                      messageApi.success('Image selected successfully');
+                      return false; // Prevent automatic upload
+                    }}
+                    onChange={handleImageUpload}
+                    fileList={fileList}
                   >
-                    Upload New Image
-                  </Button>
-                </Upload>
+                    <Button 
+                      icon={<UploadOutlined />}
+                      className="h-12 bg-white/5 border border-white/10 text-white hover:bg-white/10 rounded-full"
+                    >
+                      Upload New Image
+                    </Button>
+                  </Upload>
+                </div>
               </motion.div>
 
               {/* Form Fields */}

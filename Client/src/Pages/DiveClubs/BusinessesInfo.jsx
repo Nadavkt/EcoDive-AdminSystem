@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import '../Styles/antDesignOverride.css'
+import '../../Styles/antDesignOverride.css'
 
 const { Title } = Typography;
 
@@ -218,4 +218,4 @@ export default function BusinessesInfo() {
       </div>
     </>
   );
-}
+} 

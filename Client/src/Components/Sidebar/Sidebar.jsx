@@ -27,7 +27,7 @@ export default function Sidebar() {
   const userRole = user?.role;
 
   // Debug logging
-  console.log('Sidebar user data:', user);
+  // console.log('Sidebar user data:', user);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -128,7 +128,7 @@ export default function Sidebar() {
             <div className="space-y-3">
               <SidebarLink to="/add-user" icon={<UserAddOutlined />} text="Add User" collapsed={collapsed} />
               <SidebarLink to="/add-business" icon={<PlusOutlined />} text="Add Business" collapsed={collapsed} />
-              {userRole === 'Admin' && (
+              {(userRole === 'Admin' || userRole === 'admin') && (
                 <SidebarLink 
                   to="/add-team-member" 
                   icon={<UserAddOutlined />} 

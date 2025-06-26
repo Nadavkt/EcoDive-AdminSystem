@@ -196,6 +196,7 @@ router.put('/team-members/:id', upload.single('profile_image'), async (req, res)
             return res.status(404).json({ error: 'Team member not found' });
         }
 
+        console.log('🟡 Updated team member:', result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error('Error updating team member:', err);

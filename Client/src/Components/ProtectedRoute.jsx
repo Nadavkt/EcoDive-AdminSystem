@@ -6,7 +6,12 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
     const userStr = localStorage.getItem('user');
     const user = userStr ? JSON.parse(userStr) : null;
 
-    if (!user || !allowedRoles.includes(user.role)) {
+    // Check if user has access - handle both 'Admin' and 'admin' cases
+    const hasAccess = user && allowedRoles.some(role => 
+        role.toLowerCase() === user.role?.toLowerCase()
+    );
+
+    if (!user || !hasAccess) {
         return <Navigate to="/dashboard" replace />;
     }
 
