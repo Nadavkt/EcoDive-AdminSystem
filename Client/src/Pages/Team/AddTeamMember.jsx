@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Form, Input, Select, Button, message, Upload } from 'antd';
-import { UserAddOutlined, UploadOutlined } from '@ant-design/icons';
+import { Input, Button, Upload, message, Form, Select } from 'antd';
+import { UploadOutlined, UserAddOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
 
 const { Option } = Select;
@@ -11,8 +12,8 @@ const { Option } = Select;
 export default function AddTeamMember() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
-  const [profileImage, setProfileImage] = useState();
 
   const formVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -53,7 +54,7 @@ export default function AddTeamMember() {
         }
       });
 
-      const response = await fetch('http://localhost:5001/api/team-members', {
+      const response = await fetch(buildApiUrl('/api/team-members'), {
         method: 'POST',
         body: formData,
       });

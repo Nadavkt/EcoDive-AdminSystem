@@ -5,6 +5,7 @@ import { Input, Button, Upload, message, Form } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
 
 export default function EditProfile() {
@@ -96,10 +97,10 @@ export default function EditProfile() {
         formDataToSend.append('profile_image', profileImage);
       }
 
-      const response = await fetch(`http://localhost:5001/api/team-members/${user.id}`, {
+      const response = await fetch(buildApiUrl(`/api/team-members/${user.id}`, {
         method: 'PUT',
         body: formDataToSend
-      });
+      }))
 
       const data = await response.json();
 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import '../../Styles/antDesignOverride.css';
-import { Badge, Button, Calendar, Input, List, Select, Typography, message, Popconfirm } from 'antd';
+import { Badge, Button, Calendar, Input, List, Select, Typography, message, Popconfirm, Modal } from 'antd';
 import { CalendarOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import AddEvent from './AddEvent';
 import EditEvent from './EditEvent';
+import { buildApiUrl } from '../../config';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -25,18 +26,13 @@ export default function CalendarPage() {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/calendar');
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`Failed to fetch events: ${error.details || error.error}`);
-      }
-
-      const allEvents = await response.json();
-      setEvents(allEvents);
-      filterEventsForMonth(allEvents, selectedDate);
+      const response = await fetch(buildApiUrl('/api/calendar'));
+      const data = await response.json();
+      setEvents(data);
+      filterEventsForMonth(data, selectedDate);
     } catch (error) {
-      messageApi.error(`Failed to load calendar events: ${error.message}`);
+      console.error('Error fetching events:', error);
+      messageApi.error('Failed to fetch events');
     } finally {
       setLoading(false);
     }
@@ -61,18 +57,19 @@ export default function CalendarPage() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/calendar/${id}`, {
+      const response = await fetch(buildApiUrl(`/api/calendar/${id}`), {
         method: 'DELETE',
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to delete event');
+      if (response.ok) {
+        messageApi.success('Event deleted successfully');
+        fetchEvents();
+      } else {
+        messageApi.error('Failed to delete event');
       }
-
-      messageApi.success('Event deleted successfully');
-      fetchEvents();
     } catch (error) {
-      messageApi.error(`Failed to delete event: ${error.message}`);
+      console.error('Error deleting event:', error);
+      messageApi.error('Failed to delete event');
     }
   };
 
@@ -118,13 +115,59 @@ export default function CalendarPage() {
   const dateCellRender = (value) => {
     const listData = getListData(value);
     return (
-      <ul className="events">
+      <div className="events-container">
         {listData.map((item, index) => (
-          <li key={index}>
-            <Badge status={item.type === 'confirmed' ? 'success' : 'warning'} text={item.content} />
-          </li>
+          <div
+            key={index}
+            className="event-item"
+            style={{
+              backgroundColor: '#1890ff',
+              color: 'white',
+              padding: '2px 4px',
+              margin: '1px 0',
+              borderRadius: '2px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+            onClick={() => setSelectedEvent(item)}
+          >
+            <span>{item.content}</span>
+            <div className="event-actions">
+              <Button
+                type="text"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEdit(item);
+                }}
+                style={{ color: 'white', padding: '0 4px' }}
+              />
+              <Popconfirm
+                title="Delete Event"
+                description="Are you sure you want to delete this event?"
+                onConfirm={(e) => {
+                  e.stopPropagation();
+                  handleDelete(item.id);
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<DeleteOutlined />}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ color: 'white', padding: '0 4px' }}
+                />
+              </Popconfirm>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     );
   };
 
@@ -260,6 +303,31 @@ export default function CalendarPage() {
           onSuccess={handleSuccess}
           event={selectedEvent}
         />
+
+        {/* Event Details Modal */}
+        <Modal
+          title={selectedEvent?.title}
+          open={!!selectedEvent && !isEditModalVisible}
+          onCancel={() => setSelectedEvent(null)}
+          footer={[
+            <Button key="edit" type="primary" onClick={() => handleEdit(selectedEvent)}>
+              Edit
+            </Button>,
+            <Button key="close" onClick={() => setSelectedEvent(null)}>
+              Close
+            </Button>
+          ]}
+        >
+          {selectedEvent && (
+            <div>
+              <p><strong>Description:</strong> {selectedEvent.description}</p>
+              <p><strong>Start Time:</strong> {dayjs(selectedEvent.start_time).format('MMMM D, YYYY HH:mm')}</p>
+              <p><strong>End Time:</strong> {dayjs(selectedEvent.end_time).format('MMMM D, YYYY HH:mm')}</p>
+              <p><strong>Location:</strong> {selectedEvent.location}</p>
+              <p><strong>Status:</strong> {selectedEvent.status}</p>
+            </div>
+          )}
+        </Modal>
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Form, Input, DatePicker, TimePicker, Button, message } from 'antd';
 import dayjs from 'dayjs';
+import { buildApiUrl } from '../../config';
 
 const { TextArea } = Input;
 
@@ -22,7 +23,7 @@ const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
         status: 'confirmed'
       };
 
-      const response = await fetch('http://localhost:5001/api/calendar', {
+      const response = await fetch(buildApiUrl('/api/calendar'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

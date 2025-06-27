@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, Button, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { buildApiUrl } from '../../config';
 
 const { Option } = Select;
 
@@ -22,7 +23,7 @@ const EditTeamMember = ({ isModalVisible, onCancel, onSuccess, memberData }) => 
 
   const handleSubmit = async (values) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/team-members/${memberData.id}`, {
+      const response = await fetch(buildApiUrl(`/api/team-members/${memberData.id}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

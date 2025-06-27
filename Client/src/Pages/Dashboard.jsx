@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { Typography } from 'antd'; 
 import { motion } from 'framer-motion';
+import { buildApiUrl } from '../config';
 import '../Styles/antDesignOverride.css';
 
 const { Text, Title } = Typography;
@@ -40,7 +41,7 @@ export default function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/dashboard/stats');
+      const res = await fetch(buildApiUrl('/api/dashboard/stats'));
       const data = await res.json(); 
       setStats(data); 
     } catch (err) {

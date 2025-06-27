@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { buildApiUrl } from '../config';
 import '../index.css';
 
 export default function Login() {
@@ -62,7 +63,7 @@ export default function Login() {
 
     if (validate()) {
       try {
-        const response = await fetch('http://localhost:5001/api/login', {
+        const response = await fetch(buildApiUrl('/api/login'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

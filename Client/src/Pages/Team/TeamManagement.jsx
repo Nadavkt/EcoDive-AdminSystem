@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Input, Typography, Select, Card, Avatar, Tooltip, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import EditTeamMember from './EditTeamMember';
+import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
 
 const { Title } = Typography;
@@ -28,7 +29,7 @@ export default function TeamManagement() {
 
   const fetchTeam = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/team-members');
+      const res = await fetch(buildApiUrl('/api/team-members'));
       const data = await res.json();
       setMembers(data);
       setFiltered(data);
@@ -49,7 +50,7 @@ export default function TeamManagement() {
 
   const handleDelete = async (member) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/team-members/${member.id}`, {
+      const response = await fetch(buildApiUrl(`/api/team-members/${member.id}`), {
         method: 'DELETE',
       });
       
@@ -142,7 +143,7 @@ export default function TeamManagement() {
                   {/* Avatar positioned half in, half out */}
                   <div className="relative -mt-16 mb-4">
                     <Avatar
-                      src={member.profile_image ? `http://localhost:5001/${member.profile_image}` : undefined}
+                      src={member.profile_image ? `${buildApiUrl('')}/${member.profile_image}` : undefined}
                       size={80}
                       className="border-4 border-white shadow-lg"
                     >
