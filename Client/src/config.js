@@ -7,7 +7,7 @@ const config = {
   // Production environment (my deployed server)
   production: {
     // TODO: Replace this with your actual production server URL
-    apiBaseUrl: 'https://adminsys-ecodive.netlify.app' 
+    apiBaseUrl: 'https://ecodive-adminsystem-api.onrender.com' 
   }
 };
 
