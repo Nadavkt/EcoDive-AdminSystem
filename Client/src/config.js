@@ -12,7 +12,7 @@ const config = {
 };
 
 // Get the current environment
-const environment = import.meta.env.MODE || 'development';
+const environment = import.meta.env.MODE || 'production';
 
 // Export the appropriate configuration
 export const apiBaseUrl = config[environment].apiBaseUrl;
