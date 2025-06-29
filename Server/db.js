@@ -1,12 +1,12 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 const pool = new Pool({
-  user: 'postgres',
-  host: '127.0.0.1',
-  database: 'DiveApp',
-  password: '12nadav!0',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 // Test the connectivity of the DB

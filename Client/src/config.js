@@ -2,7 +2,7 @@
 const config = {
   // Development environment (localhost)
   development: {
-    //apiBaseUrl: 'http://localhost:5001'
+    apiBaseUrl: 'http://localhost:5001'
   },
   // Production environment (my deployed server)
   production: {
@@ -12,7 +12,7 @@ const config = {
 };
 
 // Get the current environment
-const environment = import.meta.env.MODE || 'production';
+const environment = import.meta.env.MODE || 'development';
 
 // Export the appropriate configuration
 export const apiBaseUrl = config[environment].apiBaseUrl;
