@@ -110,6 +110,7 @@ const AddUser = () => {
             layout="vertical"
             onFinish={onFinish}
             className="space-y-8"
+            autoComplete='off'
           >
             <motion.div variants={inputVariants}>
               <Form.Item

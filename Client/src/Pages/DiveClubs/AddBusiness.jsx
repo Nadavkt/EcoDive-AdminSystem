@@ -71,8 +71,8 @@ const AddBusiness = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-white mb-16 relative z-10 text-center"
       >
-        <h1 className="text-4xl font-bold mb-3">Add New Business</h1>
-        <p className="text-gray-300 text-lg">Register a new dive club or business in the system</p>
+        <h1 className="text-4xl font-bold mb-3">Add New Dive Club</h1>
+        <p className="text-gray-300 text-lg">Register a new dive club in the system</p>
       </motion.div>
 
       <motion.div
@@ -91,7 +91,7 @@ const AddBusiness = () => {
             <motion.div variants={inputVariants}>
               <Form.Item
                 name="name"
-                rules={[{ required: true, message: 'Please enter the business name!' }]}
+                rules={[{ required: true, message: 'Please enter the name of the club!' }]}
                 className="mb-10"
               >
                 <Input
