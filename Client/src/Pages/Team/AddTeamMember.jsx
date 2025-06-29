@@ -143,6 +143,7 @@ export default function AddTeamMember() {
                     prefix={<FontAwesomeIcon icon={faEnvelope} className="text-gray-400 mr-2" />}
                     placeholder="Email"
                     className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                    autoComplete='off'
                   />
                 </Form.Item>
               </motion.div>
@@ -160,6 +161,7 @@ export default function AddTeamMember() {
                     prefix={<FontAwesomeIcon icon={faLock} className="text-gray-400 mr-2" />}
                     placeholder="Password"
                     className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                    autoComplete='off'
                   />
                 </Form.Item>
               </motion.div>
