@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Input, Button, Form, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { buildApiUrl } from '../../config';
 import { faBuilding, faMapMarkerAlt, faPhone, faGlobe, faFileText } from '@fortawesome/free-solid-svg-icons';
 
 const AddBusiness = () => {
@@ -39,7 +40,7 @@ const AddBusiness = () => {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5001/api/dive-clubs', {
+      const response = await fetch(buildApiUrl('/api/dive-clubs'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

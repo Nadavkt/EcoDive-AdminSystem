@@ -14,11 +14,15 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 5001;
 
-app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+// const allowedOrigins = ['https://adminsys-ecodive.netlify.app'];
+
+// app.use(cors({
+//   origin: allowedOrigins,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   credentials: true
+// }));
+
+app.use(cors())
 
 app.use(express.json());
 

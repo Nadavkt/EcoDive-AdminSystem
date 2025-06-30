@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css'
 
 const { Title } = Typography;
@@ -20,7 +21,7 @@ export default function BusinessesInfo() {
 
   const fetchClubs = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/dive-clubs');
+      const res = await fetch(buildApiUrl('/api/dive-clubs'));
       const data = await res.json();
       setClubs(data);
       setFiltered(data);
@@ -43,7 +44,7 @@ export default function BusinessesInfo() {
 
   const handleDelete = async (club) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/dive-clubs/${club.id}`, {
+      const response = await fetch(buildApiUrl(`/api/dive-clubs/${club.id}`), {
         method: 'DELETE',
       });
 
@@ -68,7 +69,7 @@ export default function BusinessesInfo() {
     try {
       const updatedClub = await form.validateFields();
 
-      const res = await fetch(`http://localhost:5001/api/dive-clubs/${editingClub}`, {
+      const res = await fetch(buildApiUrl(`/api/dive-clubs/${editingClub}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedClub),

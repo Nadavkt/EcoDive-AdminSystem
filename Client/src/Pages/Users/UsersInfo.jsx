@@ -53,7 +53,7 @@ export default function UsersInfo() {
 
   const handleDelete = async (user) => {
     try {
-      const response = await fetch(`http://localhost:5001/api/users/${user.id}`, {
+      const response = await fetch(buildApiUrl(`/api/users/${user.id}`), {
         method: 'DELETE',
       });
 
@@ -78,7 +78,7 @@ export default function UsersInfo() {
     try {
       const updatedUser = await form.validateFields();
 
-      const res = await fetch(`http://localhost:5001/api/users/${editingUser}`, {
+      const res = await fetch(buildApiUrl(`/api/users/${editingUser}`), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedUser),
@@ -105,7 +105,7 @@ export default function UsersInfo() {
         // console.log('image src:', image)
         return image ? (
           <img
-            src={`http://localhost:5001/${image}`}
+            src={buildApiUrl(`/${image}`)}
             className="h-10 w-10 rounded-full object-cover"
             alt={`${record.first_name} ${record.last_name}`}
           />
@@ -118,7 +118,6 @@ export default function UsersInfo() {
     },
     { title: 'First Name', dataIndex: 'first_name', key: 'first_name' },
     { title: 'Last Name', dataIndex: 'last_name', key: 'last_name' },
-    // { title: 'Email', dataIndex: 'email', key: 'email' },
     {
       title: 'Email',
       dataIndex: 'email',
