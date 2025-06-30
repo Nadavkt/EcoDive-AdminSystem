@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Input, Button, Form, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faIdCard, faLock } from '@fortawesome/free-solid-svg-icons';
+import { buildApiUrl } from '../../config';
 
 const AddUser = () => {
   const [form] = Form.useForm();
@@ -43,7 +44,7 @@ const AddUser = () => {
     try {
       //console.log('Sending data to server:', values); // Debug log
 
-      const response = await fetch('http://localhost:5001/api/users', {
+      const response = await fetch(buildApiUrl('/api/users'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -41,7 +41,7 @@ export default function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(buildApiUrl('/api/dashboard/stats'));
+      const res = await fetch(buildApiUrl('/api/dashboard'));
       const data = await res.json(); 
       setStats(data); 
     } catch (err) {

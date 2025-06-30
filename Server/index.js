@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/dashboard', dashboardRoutes);
+app.use('/api', dashboardRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', clubsRoutes);
 app.use('/api', usersRoutes);

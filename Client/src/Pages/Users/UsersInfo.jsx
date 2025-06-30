@@ -10,6 +10,7 @@ import {
   Popconfirm
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
 import '../../Styles/tailwindOverride.css';
 
@@ -25,14 +26,11 @@ export default function UsersInfo() {
 
   useEffect(() => {
     fetchUsers();
-    setTimeout(() => {
-      message.success('Message test: Tailwind is not blocking me!');
-    }, 1000);
   }, []);
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('http://localhost:5001/api/users');
+      const res = await fetch(buildApiUrl('/api/users'));
       const data = await res.json();
       setUsers(data);
       setFiltered(data);

@@ -3,7 +3,7 @@ import db from '../db.js';
 
 const router = express.Router();
 
-router.get('/stats', async (req, res) => {
+router.get('/dashboard', async (req, res) => {
   try {
     const totalUsers = await db.query('SELECT COUNT(*) FROM users');
     // const emailsSent = await db.query('SELECT COUNT(*) FROM emails'); // if you log emails
