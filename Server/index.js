@@ -14,7 +14,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = 5001;
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 app.use(express.json());
 
