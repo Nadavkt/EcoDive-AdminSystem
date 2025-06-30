@@ -153,6 +153,7 @@ const AddUser = () => {
                   prefix={<FontAwesomeIcon icon={faEnvelope} className="text-gray-400 mr-2" />}
                   placeholder="Email"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                  autoComplete='new-password'
                 />
               </Form.Item>
             </motion.div>
@@ -174,13 +175,19 @@ const AddUser = () => {
             <motion.div variants={inputVariants}>
               <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Please enter your password!' }]}
+                rules={[                   
+                  { required: true, message: 'Please input password!' },
+                  { min: 8, message: 'Password must be at least 8 characters!' },
+                  { pattern: /[A-Z]/, message: 'Must include at least one uppercase letter' },
+                  { pattern: /[!@#$%^&*(),.?":{}|<>]/, message: 'Must include at least one special character' },
+                ]}
                 className="mb-12"
               >
                 <Input.Password
                   prefix={<FontAwesomeIcon icon={faLock} className="text-gray-400 mr-2" />}
                   placeholder="Password"
                   className="h-12 rounded-full text-base bg-white/5 border border-white/10 text-white px-6"
+                  autoComplete='new-password'
                 />
               </Form.Item>
             </motion.div>

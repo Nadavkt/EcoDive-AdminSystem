@@ -153,7 +153,9 @@ export default function AddTeamMember() {
                   name="password"
                   rules={[
                     { required: true, message: 'Please input password!' },
-                    { min: 8, message: 'Password must be at least 8 characters!' }
+                    { min: 6, message: 'Password must be at least 6 characters!' },
+                    { pattern: /[A-Z]/, message: 'Must include at least one uppercase letter' },
+                    { pattern: /[!@#$%^&*(),.?":{}|<>]/, message: 'Must include at least one special character' },
                   ]}
                   className="mb-10"
                 >
