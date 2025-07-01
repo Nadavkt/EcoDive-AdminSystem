@@ -38,14 +38,17 @@ export default function Dashboard() {
     emailsSent: 0,
     activeSessions: 0,
   });
+  const [insights , setInsight] = useState([]);
 
   const fetchStats = async () => {
     try {
       const res = await fetch(buildApiUrl('/api/dashboard'));
       const data = await res.json(); 
-      setStats(data); 
+      setStats(data);
+      setInsight(data.insights || [])
     } catch (err) {
       console.error('Failed to fetch dashboard stats:', err);
+      console.error('Failed to fetch insights:', err);
     }
   };
 
@@ -135,17 +138,21 @@ export default function Dashboard() {
           variants={itemVariants}
         >
           <h3 className="text-lg font-semibold">AI Insights</h3>
-          <ul className="text-sm ml-2 list-inside">
-            <li className='w-fit mt-2 text-white rounded-full px-6 py-2'>
-              Database backup failed last night
-            </li>
-            <li className='w-fit mt-4 text-white rounded-full px-6 py-2'>
-              High login activity detected
-            </li>
-            <li className='w-fit mt-4 text-white rounded-full px-6 py-2'>
-              Scheduled maintenance on Friday
-            </li>
-          </ul>
+          {insights.length === 0 ? (
+            <p className="text-gray-400 text-sm mt-2">No insights available yet.</p>
+          ) : (
+            <ul className="text-sm ml-2 list-inside">
+              {insights.map((item, index) => (
+                <li
+                  key={index}
+                  className="w-fit mt-4 text-white rounded-full px-6 py-2 bg-opacity-20"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+
         </motion.div>
 
         <motion.div 

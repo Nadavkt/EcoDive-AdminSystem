@@ -158,7 +158,7 @@ export default function EditProfile() {
                   {currentImage ? (
                     <div className="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-lg overflow-hidden">
                       <img
-                        src={`http://localhost:5001/${currentImage}`}
+                        src={buildApiUrl(`/${currentImage}`)}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />

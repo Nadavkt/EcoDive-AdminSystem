@@ -41,6 +41,7 @@ app.use('/api', clubsRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', calendarRoutes);
 
+
 // // Simple test route
 // app.get('/', (req, res) => {
 //   res.send('Backend is running!');
