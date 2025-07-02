@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Typography, Select, Card, Avatar, Tooltip, Popconfirm, message, Spin } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import EditTeamMember from './EditTeamMember';
 import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
@@ -126,7 +126,7 @@ export default function TeamManagement() {
               </Select>
             </div>
           </div>
-          <Spin spinning={loading}>
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} spinning={loading}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-20">
               {filtered.map(member => (
                 <Card

@@ -10,7 +10,7 @@ import {
   Popconfirm,
   Spin
 } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css';
 import '../../Styles/tailwindOverride.css';
@@ -214,7 +214,7 @@ export default function UsersInfo() {
               />
             </div>
           </div>
-          <Spin spinning={loading}>
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} spinning={loading}>
             <Table
               columns={columns}
               dataSource={filtered}

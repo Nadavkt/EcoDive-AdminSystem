@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm, Spin } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css'
 
@@ -202,7 +202,7 @@ export default function BusinessesInfo() {
             </div>
           </div>
 
-          <Spin spinning={loading}>
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} spinning={loading}>
             <Table
               columns={columns}
               dataSource={filtered}
