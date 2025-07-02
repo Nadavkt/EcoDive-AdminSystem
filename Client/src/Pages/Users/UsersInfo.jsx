@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import {
   Input,
   Typography,
@@ -7,7 +7,8 @@ import {
   message,
   Form,
   Button,
-  Popconfirm
+  Popconfirm,
+  Spin
 } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { buildApiUrl } from '../../config';
@@ -17,12 +18,14 @@ import '../../Styles/tailwindOverride.css';
 const { Title } = Typography;
 
 export default function UsersInfo() {
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState('');
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  
 
   useEffect(() => {
     fetchUsers();
@@ -36,6 +39,8 @@ export default function UsersInfo() {
       setFiltered(data);
     } catch (err) {
       console.error('Error fetching users:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -190,7 +195,7 @@ export default function UsersInfo() {
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <div className="space-y-6 ">
         <div className="flex justify-between items-center">
           <Title style={{fontSize: '50px'}}>Users Information</Title>
@@ -209,22 +214,23 @@ export default function UsersInfo() {
               />
             </div>
           </div>
-
-          <Table
-            columns={columns}
-            dataSource={filtered}
-            rowKey="id"
-            pagination={{ pageSize: 12 }}
-            scroll={{ x: 'max-content' }}
-            expandedRowRender={(record) =>
-              record.id === editingUser ? expandRowToEdit(record) : null
-            }
-            expandedRowKeys={editingUser ? [editingUser] : []}
-            onExpand={(expanded, record) =>
-              setEditingUser(expanded ? record.id : null)
-            }
-            expandIcon={() => null} // hide the plus icon
-          />
+          <Spin spinning={loading}>
+            <Table
+              columns={columns}
+              dataSource={filtered}
+              rowKey="id"
+              pagination={{ pageSize: 12 }}
+              scroll={{ x: 'max-content' }}
+              expandedRowRender={(record) =>
+                record.id === editingUser ? expandRowToEdit(record) : null
+              }
+              expandedRowKeys={editingUser ? [editingUser] : []}
+              onExpand={(expanded, record) =>
+                setEditingUser(expanded ? record.id : null)
+              }
+              expandIcon={() => null} // hide the plus icon
+            />
+          </Spin>
         </div>
       </div>
     </>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm } from 'antd';
+import { Input, Typography, Table, Tooltip, Drawer, Form, Button, message, Popconfirm, Spin } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { buildApiUrl } from '../../config';
 import '../../Styles/antDesignOverride.css'
@@ -7,6 +7,7 @@ import '../../Styles/antDesignOverride.css'
 const { Title } = Typography;
 
 export default function BusinessesInfo() {
+  const [loading, setLoading] = useState(true);
   const [clubs, setClubs] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState('');
@@ -28,6 +29,8 @@ export default function BusinessesInfo() {
     } catch (err) {
       console.error('Error fetching dive clubs:', err);
       messageApi.error('Failed to fetch dive clubs');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -199,22 +202,24 @@ export default function BusinessesInfo() {
             </div>
           </div>
 
-          <Table
-            columns={columns}
-            dataSource={filtered}
-            rowKey="id"
-            pagination={{ pageSize: 12 }}
-            scroll={{ x: 'max-content' }}
-            className="overflow-x-auto"
-            expandedRowRender={(record) =>
-              record.id === editingClub ? expandRowToEdit(record) : null
-            }
-            expandedRowKeys={editingClub ? [editingClub] : []}
-            onExpand={(expanded, record) =>
-              setEditingClub(expanded ? record.id : null)
-            }
-            expandIcon={() => null} // hide the plus icon
-          />
+          <Spin spinning={loading}>
+            <Table
+              columns={columns}
+              dataSource={filtered}
+              rowKey="id"
+              pagination={{ pageSize: 12 }}
+              scroll={{ x: 'max-content' }}
+              className="overflow-x-auto"
+              expandedRowRender={(record) =>
+                record.id === editingClub ? expandRowToEdit(record) : null
+              }
+              expandedRowKeys={editingClub ? [editingClub] : []}
+              onExpand={(expanded, record) =>
+                setEditingClub(expanded ? record.id : null)
+              }
+              expandIcon={() => null} // hide the plus icon
+            />
+          </Spin>
         </div>
       </div>
     </>
