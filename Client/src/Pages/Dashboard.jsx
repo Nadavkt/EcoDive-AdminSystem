@@ -5,6 +5,29 @@ import { Typography } from 'antd';
 import { motion } from 'framer-motion';
 import { buildApiUrl } from '../config';
 import '../Styles/antDesignOverride.css';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title as ChartTitle,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar, Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ChartTitle,
+  Tooltip,
+  Legend
+);
 
 const { Text, Title } = Typography;
 
@@ -39,6 +62,8 @@ export default function Dashboard() {
     activeSessions: 0,
   });
   const [insights , setInsight] = useState([]);
+  const [userLoginsData, setUserLoginsData] = useState([]);
+  const [newUsersData, setNewUsersData] = useState([]);
 
   const fetchStats = async () => {
     try {
@@ -52,9 +77,97 @@ export default function Dashboard() {
     }
   };
 
+  const fetchChartData = async () => {
+    try {
+      // Fetch user logins data
+      const loginsRes = await fetch(buildApiUrl('/api/dashboard/user-logins'));
+      const loginsData = await loginsRes.json();
+      setUserLoginsData(loginsData);
+
+      // Fetch new users data
+      const newUsersRes = await fetch(buildApiUrl('/api/dashboard/new-users'));
+      const newUsersData = await newUsersRes.json();
+      setNewUsersData(newUsersData);
+    } catch (err) {
+      console.error('Failed to fetch chart data:', err);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
+    fetchChartData();
   }, []);
+
+  // Chart options
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: 'white',
+        bodyColor: 'white',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderWidth: 1,
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+      },
+      y: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.1)',
+        },
+      },
+    },
+  };
+
+  // User logins bar chart data
+  const userLoginsChartData = {
+    labels: userLoginsData.map(item => item.month),
+    datasets: [
+      {
+        label: 'User Logins',
+        data: userLoginsData.map(item => item.count),
+        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 2,
+        borderRadius: 4,
+      },
+    ],
+  };
+
+  // New users line chart data
+  const newUsersChartData = {
+    labels: newUsersData.map(item => item.month),
+    datasets: [
+      {
+        label: 'New Users',
+        data: newUsersData.map(item => item.count),
+        borderColor: 'rgba(34, 197, 94, 1)',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: 'rgba(34, 197, 94, 1)',
+        pointBorderColor: 'white',
+        pointBorderWidth: 2,
+        pointRadius: 6,
+      },
+    ],
+  };
 
   return (
     <>
@@ -113,7 +226,15 @@ export default function Dashboard() {
         >
           <h3 className="text-lg font-semibold">User Logins Over Time</h3>
           <p className="text-sm mb-2">Monthly trend of users login activity</p>
-          <div className="h-48 rounded flex items-center justify-center">[Chart Placeholder]</div>
+          <div className="h-48 rounded">
+            {userLoginsData.length > 0 ? (
+              <Bar data={userLoginsChartData} options={chartOptions} />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Loading chart data...
+              </div>
+            )}
+          </div>
         </motion.div>
 
         <motion.div 
@@ -122,7 +243,15 @@ export default function Dashboard() {
         >
           <h3 className="text-lg font-semibold">New Users Added</h3>
           <p className="text-sm mb-2">Monthly count of new users registrations</p>
-          <div className="h-48 rounded flex items-center justify-center">[Chart Placeholder]</div>
+          <div className="h-48 rounded">
+            {newUsersData.length > 0 ? (
+              <Line data={newUsersChartData} options={chartOptions} />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-400">
+                Loading chart data...
+              </div>
+            )}
+          </div>
         </motion.div>
       </motion.div>
 

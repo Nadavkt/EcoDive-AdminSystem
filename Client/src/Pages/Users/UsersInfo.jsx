@@ -37,6 +37,10 @@ export default function UsersInfo() {
       const data = await res.json();
       setUsers(data);
       setFiltered(data);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     } catch (err) {
       console.error('Error fetching users:', err);
     } finally {

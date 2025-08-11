@@ -29,4 +29,6 @@ Cypress.Commands.add('loginAsAdmin', () => {
     cy.get('input[data-test="email"]').type('12nadav10@gmail.com');
     cy.get('input[data-test="password"]').type('12Nadav!0');
     cy.get('button[type="submit"]').click();
+
+    cy.url().should('not.include', '/dashboard');
 });

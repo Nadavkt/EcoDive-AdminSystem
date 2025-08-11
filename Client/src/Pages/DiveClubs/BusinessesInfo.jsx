@@ -26,13 +26,16 @@ export default function BusinessesInfo() {
       const data = await res.json();
       setClubs(data);
       setFiltered(data);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     } catch (err) {
       console.error('Error fetching dive clubs:', err);
       messageApi.error('Failed to fetch dive clubs');
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
+
 
   // Search filter by name or city
   const handleSearch = (value) => {
