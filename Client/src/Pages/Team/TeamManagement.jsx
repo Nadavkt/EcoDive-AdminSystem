@@ -34,6 +34,10 @@ export default function TeamManagement() {
       const data = await res.json();
       setMembers(data);
       setFiltered(data);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     } catch (err) {
       console.error('Error fetching team members:', err);
     } finally {

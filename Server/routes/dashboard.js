@@ -37,7 +37,7 @@ router.get('/dashboard', async (req, res) => {
       `There are ${totalUsers.rows[0].count} Users. `,
       `There are ${adminCount.rows[0].count} admins and ${viewerCount.rows[0].count} viewers in this Team. `,
       `There are ${clubsCount.rows[0].count} Dive Clubs in the system. `,
-      // `${clubsWithoutDives.rows[0].count} dive clubs haven’t added any dives yet.`,
+      // `${clubsWithoutDives.rows[0].count} dive clubs haven't added any dives yet.`,
       `This month you had ${newUsersThisMonth.rows[0].count} new users, ${
         growth > 0 ? `${growth}% more` : `${Math.abs(growth)}% less`
       } than last month.`
@@ -55,6 +55,58 @@ router.get('/dashboard', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Error fetching dashboard stats' });
+  }
+});
+
+// New endpoint for user login data over time
+router.get('/dashboard/user-logins', async (req, res) => {
+  try {
+    // Get user login data for the last 6 months
+    const loginData = await db.query(`
+      SELECT 
+        DATE_TRUNC('month', created_at) as month,
+        COUNT(*) as login_count
+      FROM users 
+      WHERE created_at >= CURRENT_DATE - INTERVAL '6 months'
+      GROUP BY DATE_TRUNC('month', created_at)
+      ORDER BY month
+    `);
+
+    const chartData = loginData.rows.map(row => ({
+      month: new Date(row.month).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      count: parseInt(row.login_count)
+    }));
+
+    res.json(chartData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching user login data' });
+  }
+});
+
+// New endpoint for new user registrations by month
+router.get('/dashboard/new-users', async (req, res) => {
+  try {
+    // Get new user registrations for the last 6 months
+    const newUsersData = await db.query(`
+      SELECT 
+        DATE_TRUNC('month', created_at) as month,
+        COUNT(*) as new_users
+      FROM users 
+      WHERE created_at >= CURRENT_DATE - INTERVAL '6 months'
+      GROUP BY DATE_TRUNC('month', created_at)
+      ORDER BY month
+    `);
+
+    const chartData = newUsersData.rows.map(row => ({
+      month: new Date(row.month).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      count: parseInt(row.new_users)
+    }));
+
+    res.json(chartData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching new user data' });
   }
 });
 
