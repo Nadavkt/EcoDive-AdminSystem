@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db.js';
+import { logActivity } from '../utils/activityLogger.js';
 
 const router = express.Router();
 
@@ -28,6 +29,14 @@ router.post('/dive-clubs', async (req, res) => {
     const result = await db.query(
       'INSERT INTO dive_clubs (name, city, address, phone, website, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       [name, city, address, phone, website || null, description || null]
+    );
+
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Added Dive Club',
+      `Added new dive club: ${name} in ${city}`
     );
 
     res.status(201).json({
@@ -63,6 +72,14 @@ router.put('/dive-clubs/:id', async (req, res) => {
       return res.status(404).json({ error: 'Dive club not found' });
     }
 
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Updated Dive Club',
+      `Updated dive club: ${name}`
+    );
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -80,6 +97,14 @@ router.delete('/dive-clubs/:id', async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Dive club not found' });
     }
+
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Deleted Dive Club',
+      `Deleted dive club: ${result.rows[0].name}`
+    );
 
     res.json({ message: 'Dive club deleted successfully' });
   } catch (err) {
