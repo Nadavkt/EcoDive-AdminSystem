@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { Typography } from 'antd'; 
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { buildApiUrl } from '../config';
 import '../Styles/antDesignOverride.css';
 import {
@@ -56,6 +57,7 @@ const itemVariants = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalUsers: 0,
     emailsSent: 0,
@@ -64,6 +66,7 @@ export default function Dashboard() {
   const [insights , setInsight] = useState([]);
   const [userLoginsData, setUserLoginsData] = useState([]);
   const [newUsersData, setNewUsersData] = useState([]);
+  const [activities, setActivities] = useState([]);
 
   const fetchStats = async () => {
     try {
@@ -93,9 +96,24 @@ export default function Dashboard() {
     }
   };
 
+  const fetchActivities = async () => {
+    try {
+      const res = await fetch(buildApiUrl('/api/activities'));
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setActivities(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Failed to fetch activities:', err);
+      setActivities([]);
+    }
+  };
+
   useEffect(() => {
     fetchStats();
     fetchChartData();
+    fetchActivities();
   }, []);
 
   // Chart options
@@ -167,6 +185,47 @@ export default function Dashboard() {
         pointRadius: 6,
       },
     ],
+  };
+
+  // Helper function to format activity timestamps
+  const formatActivityTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      
+      const now = new Date();
+      const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+      
+      if (diffInMinutes < 1) return 'Just now';
+      if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+      if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return 'Unknown time';
+    }
+  };
+
+  // Navigation functions for Quick Actions
+  const handleAddEvent = () => {
+    navigate('/calendar?openAddModal=true');
+  };
+
+  const handleAddTeamMember = () => {
+    navigate('/add-team-member');
+  };
+
+  const handleCreateReport = () => {
+    // For now, we'll navigate to the dashboard with a message
+    // In the future, this could open a report generation modal or page
+    alert('Report generation feature coming soon!');
   };
 
   return (
@@ -290,9 +349,24 @@ export default function Dashboard() {
         >
           <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
           <div className="flex flex-col space-y-6 mt-6">
-            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Add Event</button>
-            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Add New Member</button>
-            <button className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center">Create Report</button>
+            <button 
+              onClick={handleAddEvent}
+              className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center cursor-pointer"
+            >
+              Add Event
+            </button>
+            <button 
+              onClick={handleAddTeamMember}
+              className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center cursor-pointer"
+            >
+              Add New Member
+            </button>
+            <button 
+              onClick={handleCreateReport}
+              className="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 transition-colors duration-300 w-full flex items-center justify-center cursor-pointer"
+            >
+              Create Report
+            </button>
           </div>
         </motion.div>
 
@@ -301,9 +375,31 @@ export default function Dashboard() {
           variants={itemVariants}
         >
           <h3 className="text-lg font-semibold text-white">Activity Notifications</h3>
-          <ul className="text-sm ml-2 list-inside">
-          </ul>
-          <a href="#" className="text-blue-500 text-sm mt-2 inline-block">View All</a>
+          <div className="max-h-64 overflow-y-auto">
+            {!Array.isArray(activities) || activities.length === 0 ? (
+              <p className="text-gray-400 text-sm mt-2">
+                {!Array.isArray(activities) ? 'Loading activities...' : 'No recent activities.'}
+              </p>
+            ) : (
+              <div className="space-y-3 mt-3">
+                {activities.slice(0, 8).map((activity, index) => (
+                  <div key={activity.id || index} className="border-l-2 border-blue-500 pl-3 py-2">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="text-white text-sm font-medium">{activity.action || 'Unknown Action'}</p>
+                        <p className="text-gray-300 text-xs">{activity.details || 'No details available'}</p>
+                        <p className="text-blue-400 text-xs mt-1">{activity.user_name || 'Unknown User'}</p>
+                      </div>
+                      <span className="text-gray-400 text-xs ml-2">
+                        {activity.created_at ? formatActivityTime(activity.created_at) : 'Unknown time'}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <a href="#" className="text-blue-500 text-sm mt-3 inline-block hover:text-blue-400">View All Activities</a>
         </motion.div>
       </motion.div>
     </>

@@ -3,6 +3,7 @@ import '../../Styles/antDesignOverride.css';
 import { Badge, Button, Calendar, Input, List, Select, Typography, message, Popconfirm, Modal } from 'antd';
 import { CalendarOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useSearchParams } from 'react-router-dom';
 import AddEvent from './AddEvent';
 import EditEvent from './EditEvent';
 import { buildApiUrl } from '../../config';
@@ -11,6 +12,7 @@ const { Title } = Typography;
 const { Option } = Select;
 
 export default function CalendarPage() {
+  const [searchParams] = useSearchParams();
   const [events, setEvents] = useState([]);
   const [currentMonthEvents, setCurrentMonthEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,14 @@ export default function CalendarPage() {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  // Check for URL parameter to auto-open add event modal
+  useEffect(() => {
+    const shouldOpenAddModal = searchParams.get('openAddModal');
+    if (shouldOpenAddModal === 'true') {
+      setIsAddModalVisible(true);
+    }
+  }, [searchParams]);
 
   const fetchEvents = async () => {
     try {
@@ -56,6 +66,11 @@ export default function CalendarPage() {
   };
 
   const handleDelete = async (id) => {
+    if (!id) {
+      messageApi.error('Invalid event ID');
+      return;
+    }
+    
     try {
       const response = await fetch(buildApiUrl(`/api/calendar/${id}`), {
         method: 'DELETE',
@@ -103,6 +118,7 @@ export default function CalendarPage() {
       const eventDate = dayjs(event.start_time);
       return eventDate.isSame(value, 'day');
     }).map(event => ({
+      id: event.id,
       type: event.status,
       content: event.title,
       time: dayjs(event.start_time).format('HH:mm'),

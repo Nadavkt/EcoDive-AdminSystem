@@ -7,6 +7,7 @@ import clubsRoutes from './routes/diveClubs.js';
 import usersRoutes from './routes/users.js';
 import dashboardRoutes from './routes/dashboard.js';
 import calendarRoutes from './routes/calendar.js';
+import activityRoutes from './routes/activity.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,7 @@ app.use('/api', teamRoutes);
 app.use('/api', clubsRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', calendarRoutes);
+app.use('/api', activityRoutes);
 
 
 // // Simple test route

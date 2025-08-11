@@ -3,6 +3,7 @@ import db from '../db.js';
 import bcrypt from 'bcrypt';
 import multer from 'multer';
 import path from 'path';
+import { logActivity } from '../utils/activityLogger.js';
 
 const router = express.Router();
 
@@ -85,6 +86,14 @@ router.post('/team-members', upload.single('profile_image'), async (req, res) =>
             VALUES ($1, $2, $3, $4, $5, $6) 
             RETURNING id, first_name, last_name, email, role, profile_image`,
             [first_name, last_name, email, hashedPassword, role, profile_image]
+        );
+
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Added Team Member',
+            `Added new team member: ${first_name} ${last_name} (${role})`
         );
 
         res.status(201).json(result.rows[0]);
@@ -196,6 +205,14 @@ router.put('/team-members/:id', upload.single('profile_image'), async (req, res)
             return res.status(404).json({ error: 'Team member not found' });
         }
 
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Updated Team Member',
+            `Updated team member: ${first_name} ${last_name} (${role})`
+        );
+
         console.log('🟡 Updated team member:', result.rows[0]);
         res.json(result.rows[0]);
     } catch (err) {
@@ -212,6 +229,15 @@ router.delete('/team-members/:id', async (req, res) => {
         if (result.rowCount === 0) {
             return res.status(404).json({ error: 'Team member not found' });
         }
+
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Deleted Team Member',
+            `Deleted team member: ${result.rows[0].first_name} ${result.rows[0].last_name}`
+        );
+
         res.json({ message: 'Team member deleted successfully' });
     } catch (err) {
         console.error('Error deleting team member:', err);

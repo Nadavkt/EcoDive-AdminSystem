@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import bcrypt from 'bcrypt';
+import { logActivity } from '../utils/activityLogger.js';
 
 const router = express.Router();
 
@@ -45,6 +46,14 @@ router.post('/users', async (req, res) => {
     const result = await db.query(
       'INSERT INTO users (first_name, last_name, email, id_number, password, profile_image, license_front, license_back, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) RETURNING id, first_name, last_name, email, id_number, created_at',
       [firstName, lastName, email, idNumber, hashedPassword, null, null, null]
+    );
+
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Created User',
+      `Created new user: ${firstName} ${lastName} (${email})`
     );
 
     res.status(201).json({
@@ -113,6 +122,14 @@ router.put('/users/:id', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Updated User',
+      `Updated user profile: ${first_name} ${last_name}`
+    );
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error('Error updating user:', err);
@@ -130,6 +147,14 @@ router.delete('/users/:id', async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
+
+    // Log the activity
+    await logActivity(
+      1, // Assuming admin user ID is 1
+      'Nadav Kan Tor',
+      'Deleted User',
+      `Deleted user: ${result.rows[0].first_name} ${result.rows[0].last_name}`
+    );
 
     res.json({ message: 'User deleted successfully' });
   } catch (err) {

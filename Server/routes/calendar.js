@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db.js';
+import { logActivity } from '../utils/activityLogger.js';
 
 const router = express.Router();
 
@@ -45,6 +46,14 @@ router.post('/calendar', async (req, res) => {
             'INSERT INTO calendar (title, description, start_time, end_time, location, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
             [title, description, start_time, end_time, location, status]
         );
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Created Event',
+            `Created new event: ${title}`
+        );
+
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error('Error creating calendar event:', err);
@@ -70,6 +79,14 @@ router.put('/calendar/:id', async (req, res) => {
             return res.status(404).json({ error: 'Event not found' });
         }
 
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Updated Event',
+            `Updated event: ${title}`
+        );
+
         res.json(result.rows[0]);
     } catch (err) {
         console.error('Error updating calendar event:', err);
@@ -90,6 +107,14 @@ router.delete('/calendar/:id', async (req, res) => {
         if (result.rowCount === 0) {
             return res.status(404).json({ error: 'Event not found' });
         }
+
+        // Log the activity
+        await logActivity(
+            1, // Assuming admin user ID is 1
+            'Nadav Kan Tor',
+            'Deleted Event',
+            `Deleted event: ${result.rows[0].title}`
+        );
 
         res.json({ message: 'Event deleted successfully' });
     } catch (err) {
