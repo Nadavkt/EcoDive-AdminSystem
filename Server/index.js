@@ -8,6 +8,7 @@ import usersRoutes from './routes/users.js';
 import dashboardRoutes from './routes/dashboard.js';
 import calendarRoutes from './routes/calendar.js';
 import activityRoutes from './routes/activity.js';
+import supportRoutes from './routes/support.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,6 +43,7 @@ app.use('/api', clubsRoutes);
 app.use('/api', usersRoutes);
 app.use('/api', calendarRoutes);
 app.use('/api', activityRoutes);
+app.use('/api', supportRoutes);
 
 
 // // Simple test route
