@@ -37,11 +37,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Health check endpoint for Render
-app.get('/healthz', (req, res) => {
-  res.status(200).send('ok');
-});
-
 app.use('/api', dashboardRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', clubsRoutes);
@@ -50,48 +45,17 @@ app.use('/api', calendarRoutes);
 app.use('/api', activityRoutes);
 app.use('/api', supportRoutes);
 
-// Serve static files from React build (if they exist)
-const clientDistPath = path.join(__dirname, '../Client/dist');
-console.log('Client dist path:', clientDistPath);
 
-app.use(express.static(clientDistPath));
-
-// Handle React routes for SPA
-app.get('/dashboard', (req, res) => {
-  const indexPath = path.join(clientDistPath, 'index.html');
-  console.log('Serving dashboard from:', indexPath);
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error('Error serving dashboard:', err);
-      res.status(500).send('Error loading page');
-    }
-  });
+// Health check endpoint for Render
+app.get('/healthz', (req, res) => {
+  res.status(200).send('ok');
 });
 
-app.get('/users', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
 
-app.get('/team', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
-
-app.get('/events', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
-
-app.get('/dive-clubs', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
-
-app.get('/profile', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
-
-// Root route
-app.get('/', (req, res) => {
-  res.sendFile(path.join(clientDistPath, 'index.html'));
-});
+// // Simple test route
+// app.get('/', (req, res) => {
+//   res.send('Backend is running!');
+// });
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
