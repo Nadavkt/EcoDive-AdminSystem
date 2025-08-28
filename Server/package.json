@@ -6,8 +6,6 @@
   "scripts": {
     "start": "node index.js",
     "migrate": "node migrate.js",
-    "setup-activities": "node setup_activities.js",
-    "setup-support": "node setup_support.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
