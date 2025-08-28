@@ -54,9 +54,10 @@ app.use('/api', supportRoutes);
 app.use(express.static(path.join(__dirname, '../Client/dist')));
 
 // Catch-all handler: send back React's index.html for any non-API route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
-});
+// Temporarily disabled to debug path-to-regexp error
+// app.use('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+// });
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
