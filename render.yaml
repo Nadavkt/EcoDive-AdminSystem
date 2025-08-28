@@ -3,8 +3,13 @@ services:
     name: admin-system-server
     env: node
     buildCommand: |
+      echo "Installing Client dependencies..."
       npm --prefix Client install
+      echo "Building Client..."
       npm --prefix Client run build
+      echo "Checking build output..."
+      ls -la Client/dist/ || echo "Client/dist not found"
+      echo "Installing Server dependencies..."
       npm --prefix Server ci || (cd Server && npm install)
     startCommand: npm --prefix Server start
     envVars:
