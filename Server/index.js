@@ -53,8 +53,33 @@ app.use('/api', supportRoutes);
 // Serve static files from React build (if they exist)
 app.use(express.static(path.join(__dirname, '../Client/dist')));
 
-// Catch-all handler: send back React's index.html for any non-API route
-app.all('*', (req, res) => {
+// Handle React routes for SPA
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+app.get('/users', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+app.get('/team', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+app.get('/events', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+app.get('/dive-clubs', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
+
+// Root route
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
 });
 
