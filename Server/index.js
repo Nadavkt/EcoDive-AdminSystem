@@ -37,6 +37,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoint for Render
+app.get('/healthz', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.use('/api', dashboardRoutes);
 app.use('/api', teamRoutes);
 app.use('/api', clubsRoutes);
@@ -45,23 +50,11 @@ app.use('/api', calendarRoutes);
 app.use('/api', activityRoutes);
 app.use('/api', supportRoutes);
 
-
-// Health check endpoint for Render
-app.get('/healthz', (req, res) => {
-  res.status(200).send('ok');
-});
-
 // Serve static files from React build (if they exist)
 app.use(express.static(path.join(__dirname, '../Client/dist')));
 
 // Catch-all handler: send back React's index.html for any non-API route
-app.get('/*', (req, res) => {
-  // Don't interfere with API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  
-  // Serve React app for all other routes
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
 });
 
