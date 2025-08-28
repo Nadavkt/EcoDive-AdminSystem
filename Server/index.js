@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
 // const allowedOrigins = ['https://adminsys-ecodive.netlify.app'];
 
@@ -46,11 +46,17 @@ app.use('/api', activityRoutes);
 app.use('/api', supportRoutes);
 
 
+// Health check endpoint for Render
+app.get('/healthz', (req, res) => {
+  res.status(200).send('ok');
+});
+
+
 // // Simple test route
 // app.get('/', (req, res) => {
 //   res.send('Backend is running!');
 // });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
