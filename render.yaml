@@ -2,7 +2,10 @@ services:
   - type: web
     name: admin-system-server
     env: node
-    buildCommand: npm --prefix Server ci || (cd Server && npm install)
+    buildCommand: |
+      npm --prefix Client install
+      npm --prefix Client run build
+      npm --prefix Server ci || (cd Server && npm install)
     startCommand: npm --prefix Server start
     envVars:
       - key: NODE_ENV

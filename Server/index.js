@@ -51,11 +51,19 @@ app.get('/healthz', (req, res) => {
   res.status(200).send('ok');
 });
 
+// Serve static files from React build (if they exist)
+app.use(express.static(path.join(__dirname, '../Client/dist')));
 
-// // Simple test route
-// app.get('/', (req, res) => {
-//   res.send('Backend is running!');
-// });
+// Catch-all handler: send back React's index.html for any non-API route
+app.get('*', (req, res) => {
+  // Don't interfere with API routes
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
+  
+  // Serve React app for all other routes
+  res.sendFile(path.join(__dirname, '../Client/dist/index.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
