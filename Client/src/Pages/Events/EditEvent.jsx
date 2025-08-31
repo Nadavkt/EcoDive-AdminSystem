@@ -22,7 +22,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
       setIsAllDay(isAllDayEvent);
       
       form.setFieldsValue({
-        title: event.title,
+        title: event.title || event.content, // Handle both title and content fields
         description: event.description,
         date: startTime,
         startTime: isAllDayEvent ? null : startTime,
@@ -83,6 +83,13 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
   return (
     <>
       {contextHolder}
+      <style>
+        {`
+          .edit-event-label .ant-form-item-label > label {
+            color: black !important;
+          }
+        `}
+      </style>
       <Modal
         title="Edit Event"
         open={isModalVisible}
@@ -102,7 +109,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
             name="title"
             label="Event Title"
             rules={[{ required: true, message: 'Please enter event title' }]}
-            className="mb-6"
+            className="mb-6 edit-event-label"
           >
             <Input 
               placeholder="Enter event title" 
@@ -113,7 +120,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
           <Form.Item
             name="description"
             label="Description"
-            className="mb-6"
+            className="mb-6 edit-event-label"
           >
             <TextArea 
               rows={6} 
@@ -126,7 +133,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
             name="date"
             label="Date"
             rules={[{ required: true, message: 'Please select date' }]}
-            className="mb-6"
+            className="mb-6 edit-event-label"
           >
             <DatePicker 
               className="w-full h-12 text-lg" 
@@ -140,7 +147,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
                 name="startTime"
                 label="Start Time"
                 rules={[{ required: true, message: 'Please select start time' }]}
-                className="flex-1"
+                className="flex-1 edit-event-label"
               >
                 <TimePicker 
                   format="HH:mm" 
@@ -152,7 +159,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
                 name="endTime"
                 label="End Time"
                 rules={[{ required: true, message: 'Please select end time' }]}
-                className="flex-1"
+                className="flex-1 edit-event-label"
               >
                 <TimePicker 
                   format="HH:mm" 
@@ -180,7 +187,7 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
           <Form.Item
             name="location"
             label="Location"
-            className="mb-6"
+            className="mb-6 edit-event-label"
           >
             <Input 
               placeholder="Enter event location" 
