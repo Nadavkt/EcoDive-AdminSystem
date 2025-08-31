@@ -24,7 +24,8 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
       form.setFieldsValue({
         title: event.title || event.content, // Handle both title and content fields
         description: event.description,
-        date: startTime,
+        dateStart: startTime,
+        dateEnd: endTime,
         startTime: isAllDayEvent ? null : startTime,
         endTime: isAllDayEvent ? null : endTime,
         location: event.location
@@ -41,12 +42,12 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
       
       if (isAllDay) {
         // For all-day events, set start to 00:00 and end to 23:59
-        startTime = dayjs(values.date).startOf('day');
-        endTime = dayjs(values.date).endOf('day');
+        startTime = dayjs(values.dateStart).startOf('day');
+        endTime = dayjs(values.dateEnd).endOf('day');
       } else {
         // For regular events, use the selected times
-        startTime = dayjs(values.date).hour(values.startTime.hour()).minute(values.startTime.minute());
-        endTime = dayjs(values.date).hour(values.endTime.hour()).minute(values.endTime.minute());
+        startTime = dayjs(values.dateStart).hour(values.startTime.hour()).minute(values.startTime.minute());
+        endTime = dayjs(values.dateEnd).hour(values.endTime.hour()).minute(values.endTime.minute());
       }
 
       const eventData = {
@@ -137,17 +138,31 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
             />
           </Form.Item>
 
-          <Form.Item
-            name="date"
-            label="Date"
-            rules={[{ required: true, message: 'Please select date' }]}
-            className="mb-6 edit-event-label"
-          >
-            <DatePicker 
-              className="w-full h-12 text-lg" 
-              format="MMMM D, YYYY"
-            />
-          </Form.Item>
+          <div className="flex gap-6 mb-6">
+            <Form.Item
+              name="dateStart"
+              label="Date Start"
+              rules={[{ required: true, message: 'Please select start date' }]}
+              className="flex-1 edit-event-label"
+            >
+              <DatePicker 
+                className="w-full h-12 text-lg" 
+                format="MMMM D, YYYY"
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="dateEnd"
+              label="Date End"
+              rules={[{ required: true, message: 'Please select end date' }]}
+              className="flex-1 edit-event-label"
+            >
+              <DatePicker 
+                className="w-full h-12 text-lg" 
+                format="MMMM D, YYYY"
+              />
+            </Form.Item>
+          </div>
 
           {!isAllDay && (
             <div className="flex gap-6 mb-2">
