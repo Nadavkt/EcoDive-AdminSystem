@@ -34,6 +34,9 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
 
   const handleSubmit = async (values) => {
     try {
+      console.log('Event object:', event); // Debug log
+      console.log('Form values:', values); // Debug log
+      
       let startTime, endTime;
       
       if (isAllDay) {
@@ -55,13 +58,18 @@ const EditEvent = ({ isModalVisible, onCancel, onSuccess, event }) => {
         status: event.status // Keep the existing status
       };
 
-      const response = await fetch(buildApiUrl(`/api/calendar/${event.id}`), {
+      console.log('Event data being sent:', eventData); // Debug log
+      console.log('Event ID:', event.id); // Debug log
+
+      const response = await fetch(`https://ecodive-adminsystem-api.onrender.com/api/calendar/${event.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(eventData),
       });
+
+      console.log('Response status:', response.status); // Debug log
 
       if (!response.ok) {
         throw new Error('Failed to update event');

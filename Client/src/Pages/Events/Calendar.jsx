@@ -121,10 +121,14 @@ export default function CalendarPage() {
       id: event.id,
       type: event.status,
       content: event.title,
+      title: event.title, // Keep original title field
+      start_time: event.start_time, // Keep original start_time
+      end_time: event.end_time, // Keep original end_time
       time: dayjs(event.start_time).format('HH:mm'),
       endTime: dayjs(event.end_time).format('HH:mm'),
       description: event.description,
-      location: event.location
+      location: event.location,
+      status: event.status // Keep original status
     }));
   };
 
@@ -297,7 +301,7 @@ export default function CalendarPage() {
                       {item.description && <div className="">{item.description}</div>}
                       {item.location && <div className="">📍 {item.location}</div>}
                       <Badge 
-                        text={item.status.charAt(0).toUpperCase() + item.status.slice(1)} 
+                        text={item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Unknown'} 
                       />
                     </div>
                   }
