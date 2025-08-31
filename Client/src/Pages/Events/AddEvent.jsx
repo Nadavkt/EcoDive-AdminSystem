@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Form, Input, DatePicker, TimePicker, Button, message } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Form, Input, DatePicker, TimePicker, Button, message, Switch } from 'antd';
 import dayjs from 'dayjs';
 import { buildApiUrl } from '../../config';
 
@@ -8,11 +8,21 @@ const { TextArea } = Input;
 const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [isAllDay, setIsAllDay] = useState(false);
 
   const handleSubmit = async (values) => {
     try {
-      const startTime = dayjs(values.date).hour(values.startTime.hour()).minute(values.startTime.minute());
-      const endTime = dayjs(values.date).hour(values.endTime.hour()).minute(values.endTime.minute());
+      let startTime, endTime;
+      
+      if (isAllDay) {
+        // For all-day events, set start to 00:00 and end to 23:59
+        startTime = dayjs(values.dateStart).startOf('day');
+        endTime = dayjs(values.dateEnd).endOf('day');
+      } else {
+        // For regular events, use the selected times
+        startTime = dayjs(values.dateStart).hour(values.startTime.hour()).minute(values.startTime.minute());
+        endTime = dayjs(values.dateEnd).hour(values.endTime.hour()).minute(values.endTime.minute());
+      }
 
       const eventData = {
         title: values.title,
@@ -51,6 +61,13 @@ const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
   return (
     <>
       {contextHolder}
+      <style>
+        {`
+          .add-event-label .ant-form-item-label > label {
+            color: black !important;
+          }
+        `}
+      </style>
       <Modal
         title="Add New Event"
         open={isModalVisible}
@@ -70,7 +87,7 @@ const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
             name="title"
             label="Event Title"
             rules={[{ required: true, message: 'Please enter event title' }]}
-            className="mb-6"
+            className="mb-6 add-event-label"
           >
             <Input 
               placeholder="Enter event title" 
@@ -81,7 +98,7 @@ const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
           <Form.Item
             name="description"
             label="Description"
-            className="mb-6"
+            className="mb-6 add-event-label"
           >
             <TextArea 
               rows={6} 
@@ -90,48 +107,79 @@ const AddEvent = ({ isModalVisible, onCancel, onSuccess }) => {
             />
           </Form.Item>
 
-          <Form.Item
-            name="date"
-            label="Date"
-            rules={[{ required: true, message: 'Please select date' }]}
-            className="mb-6"
-          >
-            <DatePicker 
-              className="w-full h-12 text-lg" 
-              format="MMMM D, YYYY"
-            />
-          </Form.Item>
-
           <div className="flex gap-6 mb-6">
             <Form.Item
-              name="startTime"
-              label="Start Time"
-              rules={[{ required: true, message: 'Please select start time' }]}
-              className="flex-1"
+              name="dateStart"
+              label="Date Start"
+              rules={[{ required: true, message: 'Please select start date' }]}
+              className="flex-1 add-event-label"
             >
-              <TimePicker 
-                format="HH:mm" 
-                className="w-full h-12 text-lg"
+              <DatePicker 
+                className="w-full h-12 text-lg" 
+                format="MMMM D, YYYY"
               />
             </Form.Item>
 
             <Form.Item
-              name="endTime"
-              label="End Time"
-              rules={[{ required: true, message: 'Please select end time' }]}
-              className="flex-1"
+              name="dateEnd"
+              label="Date End"
+              rules={[{ required: true, message: 'Please select end date' }]}
+              className="flex-1 add-event-label"
             >
-              <TimePicker 
-                format="HH:mm" 
-                className="w-full h-12 text-lg"
+              <DatePicker 
+                className="w-full h-12 text-lg" 
+                format="MMMM D, YYYY"
               />
             </Form.Item>
+          </div>
+
+          {!isAllDay && (
+            <div className="flex gap-6 mb-2">
+              <Form.Item
+                name="startTime"
+                label="Start Time"
+                rules={[{ required: true, message: 'Please select start time' }]}
+                className="flex-1 add-event-label"
+              >
+                <TimePicker 
+                  format="HH:mm" 
+                  className="w-full h-12 text-lg"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="endTime"
+                label="End Time"
+                rules={[{ required: true, message: 'Please select end time' }]}
+                className="flex-1 add-event-label"
+              >
+                <TimePicker 
+                  format="HH:mm" 
+                  className="w-full h-12 text-lg"
+                />
+              </Form.Item>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 mb-6 ml-4">
+            <span className="text-base font-medium text-black">All Day Event</span>
+            <Switch 
+              checked={isAllDay}
+              onChange={(checked) => {
+                setIsAllDay(checked);
+                if (checked) {
+                  // Clear time fields when switching to all-day
+                  form.setFieldsValue({ startTime: null, endTime: null });
+                }
+              }}
+              className="text-lg"
+            />
           </div>
 
           <Form.Item
             name="location"
             label="Location"
-            className="mb-6"
+            className="mb-6 add-event-label"
           >
             <Input 
               placeholder="Enter event location" 
